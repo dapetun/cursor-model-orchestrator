@@ -1,5 +1,7 @@
 # Core profile — standalone orchestrator
 
+**Last updated:** 2026-10-03
+
 Works **without** Hindsight or GitNexus. Recommend-only skill + YAML routing.
 
 ## Install

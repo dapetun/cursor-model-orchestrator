@@ -1,5 +1,7 @@
 # Stack profile — orchestrator + Hindsight ondemand (+ optional GitNexus)
 
+**Last updated:** 2026-10-03
+
 **Router** = this repo. **Hindsight lifecycle** = [cursor-hindsight-ondemand](https://github.com/dapetun/cursor-hindsight-ondemand). **GitNexus** = upstream MCP/CLI (not vendored here).
 
 ## Install order

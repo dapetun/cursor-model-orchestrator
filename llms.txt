@@ -1,0 +1,31 @@
+# cursor-model-orchestrator
+
+> Recommend-only Cursor Pro model router skill (YAML tiers, Russian [route] line, Other Models budget).
+
+Classifies prompts with deterministic rules and recommends a cost-aware model. Overlay on Auto/Router — does not force the picker. MIT.
+
+## Profiles
+
+- **core** (default): standalone routing; no Hindsight/GitNexus required
+- **stack**: soft Hindsight retain when MCP server `hindsight` is up; optional GitNexus hints
+
+Stack Hindsight lifecycle (not this repo): https://github.com/dapetun/cursor-hindsight-ondemand
+
+## Docs
+
+- [README](https://github.com/dapetun/cursor-model-orchestrator#readme): install, core vs stack, FAQ
+- [Core](https://github.com/dapetun/cursor-model-orchestrator/blob/main/docs/integrations/core.md)
+- [Stack](https://github.com/dapetun/cursor-model-orchestrator/blob/main/docs/integrations/stack.md)
+- [Routing policy](https://github.com/dapetun/cursor-model-orchestrator/blob/main/docs/routing-policy.md)
+- [LICENSE](https://github.com/dapetun/cursor-model-orchestrator/blob/main/LICENSE): MIT
+
+## Install (short)
+
+```powershell
+pwsh -File .\scripts\install_skill.ps1 -Profile core
+# or: -Profile stack  then install cursor-hindsight-ondemand
+```
+
+## Not included
+
+Hindsight daemon wrappers, GitNexus index/MCP product code, and forcing Cursor's model picker are out of scope.
