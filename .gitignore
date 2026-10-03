@@ -7,3 +7,13 @@ Thumbs.db
 *.log
 .idea/
 .vscode/
+
+# Local machine paths / overrides (use *.example.yaml in git)
+config/projects.yaml
+config/budget.local.yaml
+
+# GitNexus index + generated agent rules (install locally)
+.gitnexus/
+AGENTS.md
+CLAUDE.md
+.claude/

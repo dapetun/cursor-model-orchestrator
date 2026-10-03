@@ -1,0 +1,36 @@
+# Core profile — standalone orchestrator
+
+Works **without** Hindsight or GitNexus. Recommend-only skill + YAML routing.
+
+## Install
+
+```powershell
+git clone https://github.com/dapetun/cursor-model-orchestrator.git
+cd cursor-model-orchestrator
+Copy-Item config\projects.example.yaml config\projects.yaml   # if missing
+# Edit config/projects.yaml with your local path_prefixes
+pwsh -File .\scripts\install_skill.ps1 -Profile core
+```
+
+Restart Cursor or open a new Agent chat.
+
+## What you get
+
+- Russian `[route]` with `tier`, `model`, `mode`, `pool`, `budget`, `shape`
+- Budget / eco / exhausted Cursor-only matrix
+- Fable HITL
+- **No** Hindsight retain (skipped silently)
+- **No** GitNexus requirements
+
+## Config
+
+| File | Role |
+| --- | --- |
+| `config/integrations.yaml` | `profile: core` after install |
+| `config/routes.yaml` | tiers, plan_shapes, exhausted matrix |
+| `config/projects.yaml` | local (gitignored); start from `projects.example.yaml` |
+| `config/budget.yaml` | Other Models remaining (manual) |
+
+## Verify
+
+See [acceptance-v0.md](../acceptance-v0.md) scenarios 1–15 and **16** (core skip retain).

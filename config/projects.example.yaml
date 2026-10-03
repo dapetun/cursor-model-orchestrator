@@ -1,4 +1,6 @@
 # Project type detection — path prefixes + filesystem markers
+# Copy to projects.yaml (gitignored) and edit paths for your machine:
+#   Copy-Item config/projects.example.yaml config/projects.yaml
 # Precedence: prompt tags > path_prefixes > markers > mixed
 
 version: 1
@@ -9,28 +11,19 @@ tags:
   "@web": web
 
 path_prefixes:
-  # Data science / ML / econometrics repos
-  - path: "C:\\My_Data\\Files\\Hobby\\GitHub\\ВКР"
+  # Examples — replace with your absolute paths (Windows or POSIX)
+  - path: "/path/to/your-ds-repo"
     type: ds
-  - path: "C:/My_Data/Files/Hobby/GitHub/ВКР"
-    type: ds
-  - path: "C:\\My_Data\\Files\\Hobby\\Magister Preparation"
+  - path: "/path/to/your-paper-repo"
     type: paper
-  - path: "C:/My_Data/Files/Hobby/Magister Preparation"
-    type: paper
-  # This orchestrator repo
-  - path: "C:\\My_Data\\Files\\Hobby\\GitHub\\cursor-model-orchestrator"
-    type: cursor_meta
-  - path: "C:/My_Data/Files/Hobby/GitHub/cursor-model-orchestrator"
+  - path: "/path/to/cursor-model-orchestrator"
     type: cursor_meta
 
 # Substring match on workspace root (case-insensitive on Windows)
 path_contains:
-  - pattern: "ВКР"
-    type: ds
-  - pattern: "Magister"
+  - pattern: "thesis"
     type: paper
-  - pattern: "статья"
+  - pattern: "article"
     type: paper
   - pattern: "cursor-model-orchestrator"
     type: cursor_meta
@@ -63,7 +56,6 @@ markers:
       - "article"
       - "paper"
       - "thesis"
-    # Prefer paper when md-heavy without app layout (heuristic in skill)
     md_heavy_without_app: true
   web:
     files:
@@ -92,7 +84,6 @@ markers:
       - ".cursor"
       - "skill"
 
-# When markers conflict, prefer this order
 marker_priority:
   - cursor_meta
   - paper

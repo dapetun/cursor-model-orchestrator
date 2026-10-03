@@ -2,6 +2,10 @@
 
 Personal policy layer for **Cursor Pro ($20)** that classifies each prompt with deterministic rules and recommends a cost-aware model. Overlay on Auto/Router — does not replace it for routine work.
 
+**Works without Hindsight or GitNexus** (core profile). Optional **stack** profile adds soft logging via [cursor-hindsight-ondemand](https://github.com/dapetun/cursor-hindsight-ondemand) and optional GitNexus hints.
+
+License: [MIT](LICENSE). Hindsight and GitNexus are separate projects.
+
 ## Goals
 
 - Protect the **Other Models** pool (~$20/mo) from trivia
@@ -11,13 +15,29 @@ Personal policy layer for **Cursor Pro ($20)** that classifies each prompt with 
 
 ## Install
 
+### Core (standalone)
+
 ```powershell
-pwsh -File .\scripts\install_skill.ps1
+git clone https://github.com/dapetun/cursor-model-orchestrator.git
+cd cursor-model-orchestrator
+Copy-Item config\projects.example.yaml config\projects.yaml
+# Edit config/projects.yaml — your path_prefixes
+pwsh -File .\scripts\install_skill.ps1 -Profile core
 ```
 
-Copies `skill/model-orchestrator/` to `%USERPROFILE%\.cursor\skills\model-orchestrator\`.
+Details: [docs/integrations/core.md](docs/integrations/core.md).
 
-Also keep this repo available so the skill can read `config/*.yaml` when the workspace is this project, or when you set `ORCHESTRATOR_ROOT` (see skill).
+### Stack (Hindsight + optional GitNexus)
+
+```powershell
+pwsh -File .\scripts\install_skill.ps1 -Profile stack
+```
+
+Then install **[cursor-hindsight-ondemand](https://github.com/dapetun/cursor-hindsight-ondemand)** (`install.ps1` + hooks/MCP), and optionally GitNexus MCP + `analyze` on coding repos.
+
+Details: [docs/integrations/stack.md](docs/integrations/stack.md).
+
+Copies `skill/model-orchestrator/` to `%USERPROFILE%\.cursor\skills\model-orchestrator\` and writes `ORCHESTRATOR_ROOT` + `integrations.yaml`.
 
 ## Slash commands
 
@@ -31,8 +51,9 @@ Tags: `@ds` `@paper` `@web` override project-type detection.
 
 ## Config
 
-- [`config/routes.yaml`](config/routes.yaml) — tiers, modes, HITL, role maps
-- [`config/projects.yaml`](config/projects.yaml) — path/marker → project type
+- [`config/integrations.yaml`](config/integrations.yaml) — `core` / `stack` (templates: `integrations.core.yaml`, `integrations.stack.yaml`)
+- [`config/routes.yaml`](config/routes.yaml) — tiers, modes, HITL, role maps, plan_shapes
+- [`config/projects.example.yaml`](config/projects.example.yaml) — copy to gitignored `projects.yaml`
 - [`config/budget.yaml`](config/budget.yaml) — Other Models remaining budget (manual in v0)
 - [`config/models.generated.yaml`](config/models.generated.yaml) — synced catalog (do not hand-edit)
 
@@ -44,13 +65,14 @@ python .\scripts\sync_models.py
 
 ## Docs
 
+- [Core install](docs/integrations/core.md) · [Stack install](docs/integrations/stack.md)
 - [Routing policy](docs/routing-policy.md)
 - [Classifier](docs/classifier.md)
-- [Hindsight schema](docs/hindsight-schema.md)
-- [Acceptance v0](docs/acceptance-v0.md)
+- [Hindsight schema](docs/hindsight-schema.md) (stack + Hindsight)
+- [Acceptance](docs/acceptance-v0.md)
 - [Roadmap (phases 0–5)](docs/roadmap.md)
-- [Research folder](docs/research/README.md) — landscape note, brainstorm register, hypotheses, weekly metrics
+- [Research folder](docs/research/README.md)
 
 ## License
 
-Personal research project. No license file — private use unless you add one later.
+MIT — see [LICENSE](LICENSE).

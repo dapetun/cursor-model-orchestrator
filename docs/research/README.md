@@ -11,6 +11,8 @@ Long-horizon evaluation of the Cursor Model Orchestrator under Pro (~$20 Other M
 | [brainstorm-register.md](brainstorm-register.md) | Candidate directions D1–D21 (ideas, not findings) |
 | [hypotheses.md](hypotheses.md) | Candidate hypotheses H1–H8 |
 | [../roadmap.md](../roadmap.md) | Phased program 0–5 + gates + metrics |
+| [../integrations/core.md](../integrations/core.md) | Standalone (core) install |
+| [../integrations/stack.md](../integrations/stack.md) | Stack + [hindsight-ondemand](https://github.com/dapetun/cursor-hindsight-ondemand) |
 
 ## Weekly metrics (minimal)
 

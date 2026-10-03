@@ -25,6 +25,15 @@ Use when YAML configs are unavailable. Prefer `config/routes.yaml` when present.
 
 Splitter hint only — **never spawn** in v0.1.
 
+## Profiles (integrations.yaml)
+
+| Profile | Hindsight retain | GitNexus hint |
+| --- | --- | --- |
+| `core` (default) | skip | skip |
+| `stack` | if MCP `hindsight` available | if GitNexus available, coding tiers only |
+
+Stack Hindsight install: https://github.com/dapetun/cursor-hindsight-ondemand
+
 ## Modes
 
 - `eco` → Cursor pool only (Composer 2.5 / Grok 4.7 per tier)

@@ -117,3 +117,19 @@ For each case, verify the Russian `[route]` line fields. **v0.1:** every `[route
 **Prompt:** «Полный рефакторинг модулей X, Y и Z — разнеси архитектуру»
 
 **Expect:** `tier=refactor_architecture`, `shape=pipeline`, `pool=other`; `действие` mentions coder→reviewer→verifier (or equivalent) and explicitly **does not** claim to spawn subagents.
+
+## 16. Core profile — no Hindsight (v0.1)
+
+**Setup:** `install_skill.ps1 -Profile core` (or `integrations.yaml` with `hindsight.enabled: false`). Hindsight MCP may be absent.
+
+**Prompt:** `/route переименуй переменную`
+
+**Expect:** full `[route]` with machine fields; **no** retain call / no claim that the route was logged to Hindsight; turn succeeds.
+
+## 17. Stack profile — retain when MCP up (v0.1)
+
+**Setup:** `install_skill.ps1 -Profile stack`; [cursor-hindsight-ondemand](https://github.com/dapetun/cursor-hindsight-ondemand) installed; Hindsight MCP server name `hindsight` healthy.
+
+**Prompt:** `/route Оцени значимость коэффициента в панели`
+
+**Expect:** `[route]` with `tier=science_stats`; if MCP available, lean `retain` once per dedup tuple (see hindsight-schema). If MCP is down, same as scenario 16 (skip retain, no error).

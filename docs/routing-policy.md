@@ -138,6 +138,11 @@ Canonical source: `plan_shapes` in [`config/routes.yaml`](../config/routes.yaml)
 
 `splitter_hint: true` means one RU line in `действие` naming roles that would fire. Execution remains recommend-only until Phase 1.
 
+## Profiles
+
+- **core** — routing only ([integrations/core.md](integrations/core.md))
+- **stack** — soft Hindsight via [cursor-hindsight-ondemand](https://github.com/dapetun/cursor-hindsight-ondemand) + optional GitNexus ([integrations/stack.md](integrations/stack.md))
+
 ## Related docs
 
 - [classifier.md](classifier.md)

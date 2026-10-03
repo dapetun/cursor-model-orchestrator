@@ -3,9 +3,11 @@ name: model-orchestrator
 description: >
   Always-on cost-aware model router for Cursor Pro. Classifies each user prompt
   with deterministic rules (keywords + project type), recommends a model under
-  the Other Models budget, prints a short Russian [route] line, and logs lean
-  decisions to Hindsight. Use on coding, DS/ML, academic papers, research,
-  frontend, and whenever the user mentions /eco, /max, or /route.
+  the Other Models budget, and prints a short Russian [route] line. Works
+  standalone (core profile). With stack profile, lean-logs to Hindsight when
+  MCP is available and may hint GitNexus on coding tasks. Use on coding, DS/ML,
+  academic papers, research, frontend, and whenever the user mentions /eco,
+  /max, or /route.
 ---
 
 # Model Orchestrator (v0.1 — recommend only)
@@ -20,17 +22,27 @@ User-facing language: **Russian**. This skill's instructions: **English**.
 
 Resolve configs in this order:
 
-1. Workspace `config/routes.yaml` if present (this repo)
+1. Workspace `config/` if present (this repo): `routes.yaml`, `integrations.yaml`, `projects.yaml`, `budget.yaml`, `models.generated.yaml`
 2. Path in `ORCHESTRATOR_ROOT.txt` next to this SKILL.md (written by `install_skill.ps1`)
-3. Embedded fallbacks in [reference-routes.md](reference-routes.md)
+3. Skill-local `integrations.yaml` (copied at install)
+4. Embedded fallbacks in [reference-routes.md](reference-routes.md)
 
-Always read when available: `routes.yaml`, `projects.yaml`, `budget.yaml`, `models.generated.yaml`.
+If `projects.yaml` is missing, use `projects.example.yaml` markers only (path_prefixes may be placeholders).
+
+### Integrations profile (`integrations.yaml`)
+
+| `profile` | Behavior |
+| --- | --- |
+| `core` (default) | Router only. Skip Hindsight retain and GitNexus hints. |
+| `stack` | Soft deps: retain if Hindsight MCP available; optional GitNexus hint on coding tiers. |
+
+Read `hindsight.enabled` / `gitnexus.enabled` from that file. Missing file → treat as **core**.
 
 ## Every turn (mandatory)
 
 1. **Classify once** (mode + project_type + tier + logical model + pool + budget + shape).
 2. Print **one** Russian `[route]` block at the start of the reply (before plan). Machine fields `tier`, `model`, `mode`, `pool`, `budget`, `shape` are required every turn.
-3. Lean **Hindsight retain** (see logging rules).
+3. **Integrations (soft):** Hindsight retain and GitNexus hints — see below. Never fail the turn if tools are absent.
 4. Continue with **plan → approve** (same recommended model for plan and execute advice).
 5. **v0.1:** do not spawn subagents; tell the user to switch the chat model if needed. Plan-shape / splitter text is a hint only.
 
@@ -168,9 +180,12 @@ Map `logical_model[mode]` through `models.generated.yaml` `logical.*.display` (f
 
 Science/stats when Other Models allowed: never end on Composer-only; use `other.sonnet_strong` (balance) or `other.opus` (max).
 
-## Hindsight logging (anti-spam)
+## Hindsight logging (anti-spam, stack only)
 
-After emitting the route line, call Hindsight `retain` **only if** the tuple `(task_type, model, mode, project_type, pool, budget, shape)` differs from the last one logged **in this chat**.
+**Gate:** `integrations.yaml` has `hindsight.enabled: true` **and** Hindsight MCP/tools are available (typically via [cursor-hindsight-ondemand](https://github.com/dapetun/cursor-hindsight-ondemand), MCP server name `hindsight` unless overridden).
+
+- If gate fails (core profile, or MCP down): **skip retain** — do not error, do not claim logging in `[route]`.
+- If gate passes: call `retain` **only if** the tuple `(task_type, model, mode, project_type, pool, budget, shape)` differs from the last one logged **in this chat**.
 
 Content template (English keys OK inside text):
 
@@ -180,6 +195,13 @@ orchestrator_route task_type=<tier> tier=<tier> model=<display> logical=<key> re
 
 - `document_id`: `cursor-model-orchestrator-route-log-YYYY-MM` (UTC month)
 - **Do not** log full prompts, code, token counts, stack traces, or PII
+- Schema details: repo `docs/hindsight-schema.md` (used when stack + Hindsight)
+
+## GitNexus hint (soft, stack only)
+
+**Gate:** `gitnexus.enabled: true` and GitNexus MCP/CLI available.
+
+On coding-related tiers (`default_code`, `refactor_architecture`, `long_agent`, `cursor_meta` when editing code): one short hint that impact / `detect_changes` is available — **do not** block classify/route if GitNexus is missing. Never require GitNexus in core.
 
 ## Slash commands
 

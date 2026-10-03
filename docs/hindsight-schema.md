@@ -1,5 +1,7 @@
 # Hindsight logging schema (lean)
 
+Used when **stack** profile has `hindsight.enabled: true` and Hindsight MCP is available (see [integrations/stack.md](integrations/stack.md)). Core profile skips retain.
+
 ## Goal
 
 Store enough to evaluate the orchestrator later without flooding memory.

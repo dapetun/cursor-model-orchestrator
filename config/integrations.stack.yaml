@@ -1,0 +1,13 @@
+# Stack profile template - enable soft deps on Hindsight + GitNexus.
+# Applied by: pwsh -File .\scripts\install_skill.ps1 -Profile stack
+
+version: 1
+profile: stack
+
+hindsight:
+  enabled: true
+  ondemand_repo: https://github.com/dapetun/cursor-hindsight-ondemand
+  mcp_server: hindsight
+
+gitnexus:
+  enabled: true
