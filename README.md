@@ -2,7 +2,7 @@
 
 **What it is:** A recommend-only Cursor skill that classifies each prompt with deterministic rules (keywords + project type) and recommends a cost-aware model under the Cursor Pro **Other Models** (~$20) budget. It overlays Auto/Router for routine work; it does not replace Auto and does not force the model picker.
 
-**Last updated:** 2026-10-03 · **License:** [MIT](LICENSE) · **Release:** [v0.1.0](https://github.com/dapetun/cursor-model-orchestrator/releases/tag/v0.1.0)
+**Last updated:** 2026-10-03 · **License:** [MIT](LICENSE) · **Release:** [v0.1.1](https://github.com/dapetun/cursor-model-orchestrator/releases/tag/v0.1.1)
 
 **Stack partner (optional):** [cursor-hindsight-ondemand](https://github.com/dapetun/cursor-hindsight-ondemand) — local Hindsight daemon lifecycle on Windows. This repo is the **model router**; that repo is **memory lifecycle**. GitNexus is separate upstream.
 
