@@ -12,11 +12,22 @@
 1. Detect slash mode (`eco` / `max` / default `balance`)
 2. Detect project type (tags → paths → markers)
 3. Classify task tier (keywords + severity)
-4. Apply budget guard
+4. Apply budget guard → `budget` (`ok` / `warn` / `exhausted`) and resolved `pool`
 5. Map tier+mode → logical model → display name
-6. Fable HITL if needed
-7. Emit Russian `[route]` line + lean Hindsight log
-8. Continue plan → approve
+6. Resolve `shape` from `plan_shapes.by_tier` (hint only; no spawn in v0.1)
+7. Fable HITL if needed
+8. Emit Russian `[route]` with machine fields + lean Hindsight log
+9. Continue plan → approve
+
+### [route] machine fields (v0.1)
+
+```text
+[route] project=… tier=… model=… mode=… pool=… budget=… shape=…
+почему: …
+действие: …
+```
+
+Required every turn: `tier`, `model`, `mode`, `pool`, `budget`, `shape`.
 
 ## Tier matrix (balance, budget OK)
 
@@ -112,6 +123,20 @@ Manual remaining updates in v0; usage scrape is v3. When Other is empty and scie
 | researcher | GPT-5.6 Terra |
 | verifier | Claude Sonnet 5 |
 | scientist | Claude Opus 5 |
+
+## Plan shapes (v0.1 — recommend hints only)
+
+Canonical source: `plan_shapes` in [`config/routes.yaml`](../config/routes.yaml).
+
+| Tier | shape | Notes |
+| --- | --- | --- |
+| `parallel_roles` | `specialist` | Splitter lists role_map roles; **do not spawn** |
+| `refactor_architecture` | `pipeline` | Hint: coder→reviewer→verifier |
+| `long_agent` | `hybrid` | Hint: planner→coder→reviewer |
+| `science_stats` | `none` | Single strong path |
+| other tiers | `none` | — |
+
+`splitter_hint: true` means one RU line in `действие` naming roles that would fire. Execution remains recommend-only until Phase 1.
 
 ## Related docs
 

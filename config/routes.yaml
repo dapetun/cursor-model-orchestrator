@@ -1,4 +1,4 @@
-# Cursor Model Orchestrator — routing policy (v0)
+# Cursor Model Orchestrator — routing policy (v0.1)
 # Logical model keys resolve via config/models.generated.yaml
 
 version: 1
@@ -229,6 +229,30 @@ project_type_nudges:
     bias_tiers: [cursor_meta]
   mixed:
     bias_tiers: []
+
+# Plan shapes — recommend-only hints (v0.1). Do not spawn agents from this section.
+plan_shapes:
+  default: none
+  # when classifier hits these tiers, set shape= in [route] only
+  by_tier:
+    parallel_roles: specialist
+    refactor_architecture: pipeline
+    long_agent: hybrid
+    science_stats: none          # single strong path
+    quick_edit: none
+    default_code: none
+    research_docs: none
+    cursor_meta: none
+    docs_office: none
+    frontend_design: none
+    paper: none
+  splitter_hint: true            # skill: name which roles would fire; do not spawn
+  splitter_roles:
+    specialist: [planner, coder, reviewer, researcher, verifier, scientist]
+    pipeline: [coder, reviewer, verifier]
+    hybrid: [planner, coder, reviewer]
+    mapper: [planner]
+    none: []
 
 # v1+ role spawn defaults (documented for forward compat)
 roles_v1:

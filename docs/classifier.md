@@ -147,6 +147,10 @@ If ≥2 high-level domains appear (e.g. paper + science_stats + default_code):
 2. Still emit a single primary `[route]` using highest severity.
 3. Optionally list role→model advice (from `routes.yaml` `parallel_roles.role_map`).
 
+## Plan shapes (after tier pick)
+
+Map primary tier → `shape` via `plan_shapes.by_tier` in `routes.yaml` (default `none`). This does **not** change severity or model selection. If `splitter_hint` is true and `shape != none`, name roles in `действие` only — never spawn in v0.1.
+
 ## Project nudges
 
 After tier pick, if `project_type` is set, soft-bias (only when tier is `default_code` or ambiguous between two adjacent severities):

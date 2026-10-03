@@ -8,7 +8,7 @@ description: >
   frontend, and whenever the user mentions /eco, /max, or /route.
 ---
 
-# Model Orchestrator (v0 — recommend only)
+# Model Orchestrator (v0.1 — recommend only)
 
 ## Mission
 
@@ -28,21 +28,23 @@ Always read when available: `routes.yaml`, `projects.yaml`, `budget.yaml`, `mode
 
 ## Every turn (mandatory)
 
-1. **Classify once** (mode + project_type + tier + logical model).
-2. Print **one** Russian `[route]` block at the start of the reply (before plan).
+1. **Classify once** (mode + project_type + tier + logical model + pool + budget + shape).
+2. Print **one** Russian `[route]` block at the start of the reply (before plan). Machine fields `tier`, `model`, `mode`, `pool`, `budget`, `shape` are required every turn.
 3. Lean **Hindsight retain** (see logging rules).
 4. Continue with **plan → approve** (same recommended model for plan and execute advice).
-5. **v0:** do not spawn subagents; tell the user to switch the chat model if needed.
+5. **v0.1:** do not spawn subagents; tell the user to switch the chat model if needed. Plan-shape / splitter text is a hint only.
 
 ### Route line format (Russian)
 
 ```text
-[route] project=<type> tier=<tier> model=<display> mode=<eco|balance|max>
+[route] project=<type> tier=<tier> model=<display> mode=<eco|balance|max> pool=<cursor|other|mixed> budget=<ok|warn|exhausted> shape=<none|mapper|specialist|pipeline|hybrid>
 почему: <≤120 chars>
-действие: <переключи модель чата на … · план → approve>
+действие: <переключи модель чата на … · план → approve · optional shape/roles hint>
 ```
 
-If budget warn/block: add `бюджет: предупреждение, hard Other заблокированы` or `бюджет: исчерпан → eco`.
+- `pool`: `cursor` on eco/exhausted/hard-block; else tier pool (`other` / `cursor` / `mixed`).
+- `budget`: `ok` if remaining OK and under warn ratio; `warn` at hard-block@warn_ratio; `exhausted` if `remaining_usd<=0`. `/eco` alone does not force `exhausted`.
+- `shape`: from `plan_shapes.by_tier` in `routes.yaml` (default `none`). If `shape != none` and `splitter_hint: true`, add one RU hint in `действие` naming roles that *would* fire — **never spawn** in v0.1.
 
 If `/route` only: print the block and **stop**.
 
@@ -89,7 +91,18 @@ Detect `/eco` `/max` in the user message. Default mode = `balance`.
 Other Models недоступен — нет Sonnet/Opus; ответ на Grok. Перепроверь цифры и выводы.
 ```
 
-**Display:** `mode=eco` or `budget=exhausted` + Cursor display name only.
+**Display:** `mode=eco` and/or `budget=warn|exhausted` + `pool=cursor` + Cursor display name only.
+
+## Plan shapes (v0.1 hints only)
+
+Read `plan_shapes` from `routes.yaml`. Defaults if missing: `shape=none`, no spawn.
+
+| Tier (examples) | shape | Splitter hint (RU, do not spawn) |
+| --- | --- | --- |
+| parallel_roles | specialist | роли: planner/coder/reviewer/… — не спавню в v0.1 |
+| refactor_architecture | pipeline | роли: coder→reviewer→verifier — не спавню в v0.1 |
+| long_agent | hybrid | роли: planner→coder→reviewer — не спавню в v0.1 |
+| science_stats, quick_edit, … | none | (omit roles line) |
 
 ## HITL — Fable
 
@@ -157,12 +170,12 @@ Science/stats when Other Models allowed: never end on Composer-only; use `other.
 
 ## Hindsight logging (anti-spam)
 
-After emitting the route line, call Hindsight `retain` **only if** the tuple `(task_type, model, mode, project_type)` differs from the last one logged **in this chat**.
+After emitting the route line, call Hindsight `retain` **only if** the tuple `(task_type, model, mode, project_type, pool, budget, shape)` differs from the last one logged **in this chat**.
 
 Content template (English keys OK inside text):
 
 ```text
-orchestrator_route task_type=<tier> model=<display> reason=<why≤120> mode=<mode> project_type=<type>
+orchestrator_route task_type=<tier> tier=<tier> model=<display> logical=<key> reason=<why≤120> mode=<mode> project_type=<type> pool=<cursor|other|mixed> budget=<ok|warn|exhausted> shape=<none|mapper|specialist|pipeline|hybrid>
 ```
 
 - `document_id`: `cursor-model-orchestrator-route-log-YYYY-MM` (UTC month)
@@ -180,7 +193,7 @@ orchestrator_route task_type=<tier> model=<display> reason=<why≤120> mode=<mod
 1. Never select Fable without HITL confirmation.
 2. Never spend Other Models in `/eco` or when budget exhausted.
 3. Never skip the Russian `[route]` line.
-4. v0: recommend only — no cascade execution, no best-of-N runs, no mid-chat model mutation.
+4. v0.1: recommend only — no cascade execution, no best-of-N runs, no mid-chat model mutation, no subagent spawn (shape/splitter are hints).
 5. Prefer plan → approve before large edits.
 6. Bash is not a separate tier; route like normal code.
 

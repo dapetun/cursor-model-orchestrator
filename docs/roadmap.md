@@ -39,17 +39,17 @@ flowchart LR
 
 ### Phase 0 — Stabilize + measure (now → ~4 weeks)
 
-**Status:** v0 implemented (recommend-only skill + YAML).
+**Status:** v0.1 skill specified (recommend-only + machine `[route]` + plan_shapes hints). Weekly measurement still manual.
 
 - **Exhausted matrix shipped:** per-tier Cursor-only models when Other Models empty / `/eco` / hard-block@80% (`exhausted_policy` in [`config/routes.yaml`](../config/routes.yaml); table in [routing-policy.md](routing-policy.md))
-- Run [acceptance-v0.md](acceptance-v0.md) including scenarios 11–12 (exhausted science + role remap)
-- Weekly metrics + science journal
+- **D18/D19 specified in v0.1 skill:** `[route]` requires `pool`, `budget`, `shape`; Hindsight lean retain includes `logical` / `pool` / `budget` / `shape` ([hindsight-schema.md](hindsight-schema.md))
+- **D13/D16 YAML stubs:** `plan_shapes` + splitter hints (no spawn)
+- Run [acceptance-v0.md](acceptance-v0.md) including scenarios 11–15
+- Weekly metrics: [research/metrics-log.md](research/metrics-log.md) + science journal
 - Tune keyword false positives in classifier / skill
 - Keep budget warn@80% + hard-other block (`config/budget.yaml`)
 
-- Lean token/pool impact field beside `[route]` / Hindsight (D18); machine route fields `{tier, model, reason}` (D19)
-
-**Aligns:** D1, D8, D18, D19 · **Tests:** H1 (exploratory)
+**Aligns:** D1, D8, D18, D19, D13/D16 (stubs) · **Tests:** H1 (exploratory)
 
 ### Phase 1 — Execution helpers
 

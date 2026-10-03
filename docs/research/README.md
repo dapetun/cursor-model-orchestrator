@@ -14,7 +14,7 @@ Long-horizon evaluation of the Cursor Model Orchestrator under Pro (~$20 Other M
 
 ## Weekly metrics (minimal)
 
-Append one row per week to `metrics-log.md` (create on first use) or keep a personal note outside the repo if preferred.
+Append one row per week to [metrics-log.md](metrics-log.md) (Phase 0 / H1 exploratory scaffold).
 
 Suggested columns:
 

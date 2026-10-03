@@ -2,6 +2,29 @@
 
 Use when YAML configs are unavailable. Prefer `config/routes.yaml` when present.
 
+## [route] machine fields (v0.1)
+
+```text
+[route] project=… tier=… model=… mode=… pool=… budget=… shape=…
+```
+
+| Field | Values |
+| --- | --- |
+| pool | `cursor` \| `other` \| `mixed` |
+| budget | `ok` \| `warn` \| `exhausted` |
+| shape | `none` \| `mapper` \| `specialist` \| `pipeline` \| `hybrid` |
+
+### plan_shapes fallback (if YAML missing)
+
+| Tier | shape |
+| --- | --- |
+| parallel_roles | specialist |
+| refactor_architecture | pipeline |
+| long_agent | hybrid |
+| all others | none |
+
+Splitter hint only — **never spawn** in v0.1.
+
 ## Modes
 
 - `eco` → Cursor pool only (Composer 2.5 / Grok 4.7 per tier)

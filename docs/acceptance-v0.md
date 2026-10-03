@@ -1,8 +1,8 @@
-# Acceptance scenarios (v0)
+# Acceptance scenarios (v0 / v0.1)
 
 Manual checks in a **new Agent chat** after `scripts/install_skill.ps1`.
 
-For each case, verify the Russian `[route]` line fields.
+For each case, verify the Russian `[route]` line fields. **v0.1:** every `[route]` must include `tier`, `model`, `mode`, `pool`, `budget`, `shape`.
 
 ## 1. Tiny rename
 
@@ -91,3 +91,29 @@ For each case, verify the Russian `[route]` line fields.
 **Prompt:** `/route переименуй файл`
 
 **Expect:** prints `[route]` and stops without editing files.
+
+## 13. Machine fields — balance science (v0.1)
+
+**Setup:** budget OK (`remaining_usd` well above warn).  
+**Prompt:** «Оцени значимость коэффициента в панельной регрессии»
+
+**Expect:** `tier=science_stats`, `pool=other`, `budget=ok`, `shape=none`, `mode=balance`; model Claude Sonnet 5 (not Composer-only). Machine fields all present.
+
+## 14. Machine fields — eco / exhausted (v0.1)
+
+**Setup A:** `/eco` with budget OK.  
+**Prompt:** `/eco Оцени значимость коэффициента в панели`
+
+**Expect:** `pool=cursor`, `mode=eco`, model Grok 4.7, science warning; `budget=ok` (eco alone ≠ exhausted).
+
+**Setup B:** `remaining_usd: 0`.  
+**Prompt:** «Оцени значимость коэффициента в панельной регрессии»
+
+**Expect:** `pool=cursor`, `budget=exhausted`, Grok 4.7 + mandatory science warning.
+
+## 15. Plan shape pipeline hint — no spawn (v0.1)
+
+**Setup:** budget OK.  
+**Prompt:** «Полный рефакторинг модулей X, Y и Z — разнеси архитектуру»
+
+**Expect:** `tier=refactor_architecture`, `shape=pipeline`, `pool=other`; `действие` mentions coder→reviewer→verifier (or equivalent) and explicitly **does not** claim to spawn subagents.
