@@ -1,0 +1,26 @@
+# Other Models pool budget (Cursor Pro ~$20 included)
+# v0: update remaining_usd manually after checking Cursor usage dashboard
+# v3: optional sync from Cursor usage parse
+
+version: 1
+
+other_models_monthly_usd: 20.0
+remaining_usd: 20.0
+
+warn_at_ratio: 0.8
+block_hard_other_at_ratio: 0.8
+
+# Set true after user says «разреши дорогие модели» or `/max force` this billing cycle
+hard_other_override: false
+
+updated_at: "2026-10-03"
+notes: >
+  Edit remaining_usd when you check Cursor Settings → usage.
+  At remaining_usd <= (1 - warn_at_ratio) * monthly → warn + block hard Other Models
+  unless hard_other_override is true.
+  At remaining_usd <= 0 → force eco (Cursor Models only).
+
+# Manual commands (tell the agent in chat, Russian OK):
+#   «бюджет remaining 12»  → set remaining_usd: 12
+#   «разреши дорогие модели» → hard_other_override: true
+#   «сброс бюджета» → remaining_usd back to monthly (new cycle)

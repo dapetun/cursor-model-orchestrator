@@ -1,0 +1,190 @@
+# Cursor Model Orchestrator — routing policy (v0)
+# Logical model keys resolve via config/models.generated.yaml
+
+version: 1
+
+defaults:
+  mode: balance
+  language_user_facing: ru
+  workflow: plan_then_approve
+  daily_driver: auto_overlay
+  explain_every_route: true
+
+hitl:
+  require_confirm_for:
+    - other.fable
+  confirm_prompt_ru: >
+    Рекомендую Claude Fable (дорого, data retention у провайдера).
+    Подтвердить использование Fable? (да/нет)
+
+budget:
+  source: config/budget.yaml
+  on_exhausted: force_eco
+  on_warn_ratio: warn_and_block_hard_other
+  override_phrases_ru:
+    - разреши дорогие модели
+    - /max force
+
+modes:
+  eco:
+    allow_other_models: false
+    allow_best_of_n: false
+    allow_fable: false
+    allow_cascade: false
+    fallback_logical: cursor.composer
+  balance:
+    allow_other_models: true
+    allow_best_of_n: false
+    allow_fable_with_hitl: true
+    allow_cascade: false
+  max:
+    allow_other_models: true
+    allow_best_of_n: true   # v2
+    allow_fable_with_hitl: true
+    allow_cascade: true     # v2
+    prefer_stronger: true
+
+# Severity order (highest first) when multiple tiers match
+tier_severity:
+  - science_stats
+  - refactor_architecture
+  - long_agent
+  - parallel_roles
+  - paper
+  - frontend_design
+  - docs_office
+  - research_docs
+  - cursor_meta
+  - default_code
+  - quick_edit
+
+tiers:
+  quick_edit:
+    hard: false
+    pool: cursor
+    logical_model:
+      balance: cursor.auto_or_composer
+      eco: cursor.composer
+      max: cursor.auto_or_composer
+    notes: Tiny 1-file edits; never spend Other Models.
+
+  default_code:
+    hard: false
+    pool: cursor
+    logical_model:
+      balance: cursor.auto_or_composer
+      eco: cursor.composer
+      max: cursor.grok_flagship
+    escalate_to: refactor_architecture
+
+  refactor_architecture:
+    hard: true
+    pool: other
+    logical_model:
+      balance: other.opus
+      eco: cursor.grok_flagship
+      max: other.sol
+    fallback_if_blocked: cursor.grok_flagship
+
+  science_stats:
+    hard: true
+    pool: other
+    cheap_first: false
+    logical_model:
+      balance: other.sonnet_strong
+      eco: cursor.grok_flagship
+      max: other.opus
+    fallback_if_blocked: cursor.grok_flagship
+    notes: Critical reliability — never Composer-only when Other Models available.
+
+  paper:
+    hard: true
+    pool: other
+    logical_model:
+      balance: other.sonnet_strong
+      eco: cursor.grok_flagship
+      max: other.opus
+    fallback_if_blocked: cursor.grok_flagship
+    notes: Journal tech formatting only after user confirms content ready.
+
+  frontend_design:
+    hard: false
+    pool: other
+    logical_model:
+      balance: other.sonnet_strong
+      eco: cursor.composer
+      max: other.opus
+    fallback_if_blocked: cursor.composer
+    notes: Design-sensitive; not trivia tier.
+
+  docs_office:
+    hard: false
+    pool: inherit
+    logical_model:
+      balance: cursor.auto_or_composer
+      eco: cursor.composer
+      max: other.sonnet_strong
+    notes: Same router as text/code; bias paper if academic content.
+
+  research_docs:
+    hard: false
+    pool: cursor
+    logical_model:
+      balance: cursor.auto_or_composer
+      eco: cursor.composer
+      max: other.terra
+    notes: Deep synthesis may escalate to other.terra in max.
+
+  cursor_meta:
+    hard: false
+    pool: cursor
+    logical_model:
+      balance: cursor.composer
+      eco: cursor.composer
+      max: cursor.grok_flagship
+    escalate_to: refactor_architecture
+
+  long_agent:
+    hard: true
+    pool: other
+    logical_model:
+      balance: other.opus
+      eco: cursor.grok_flagship
+      max: other.sol
+    fallback_if_blocked: cursor.grok_flagship
+    remind_plan_approve: true
+
+  parallel_roles:
+    hard: true
+    pool: mixed
+    v0_behavior: advise_only
+    role_map:
+      planner: cursor.composer
+      coder: cursor.auto_or_composer
+      reviewer: other.sonnet_strong
+      researcher: other.terra
+      verifier: other.sonnet_strong
+      scientist: other.opus
+    notes: v0 recommends role→model; v1 spawns subagents.
+
+project_type_nudges:
+  ds:
+    bias_tiers: [science_stats, default_code]
+  paper:
+    bias_tiers: [paper, science_stats]
+  web:
+    bias_tiers: [frontend_design, default_code]
+  backend:
+    bias_tiers: [default_code, refactor_architecture]
+  cursor_meta:
+    bias_tiers: [cursor_meta]
+  mixed:
+    bias_tiers: []
+
+# v1+ role spawn defaults (documented for forward compat)
+roles_v1:
+  reviewer: other.sonnet_strong
+  coder: cursor.auto_or_composer
+  researcher: other.terra
+  verifier: other.sonnet_strong
+  scientist: other.opus
