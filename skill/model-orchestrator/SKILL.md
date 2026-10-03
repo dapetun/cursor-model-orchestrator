@@ -69,10 +69,27 @@ Detect `/eco` `/max` in the user message. Default mode = `balance`.
 ## Budget guard (`budget.yaml`)
 
 - Let `spent_ratio = 1 - remaining_usd / other_models_monthly_usd`.
-- If `remaining_usd <= 0` or mode is `eco` → force Cursor Models (`cursor.composer` / `cursor.grok_flagship`).
-- If `spent_ratio >= warn_at_ratio` (default 0.8) and `hard_other_override` is false → **warn in RU** and **block hard Other Models** (use `fallback_if_blocked` / Cursor pool).
+- **Cursor-only triggers** (same matrix): `remaining_usd <= 0`, mode `/eco`, or `spent_ratio >= warn_at_ratio` without `hard_other_override`.
+- On those triggers: resolve **`logical_model.eco`** / `exhausted_policy.matrix` from `routes.yaml` — never recommend Other Models.
 - Hard tiers: `science_stats`, `refactor_architecture`, `long_agent`, `parallel_roles`, `paper` (when mapped to Other).
 - Manual updates: if user says «бюджет remaining N», treat remaining as N for this session and ask to edit `budget.yaml`.
+
+### Exhausted / eco matrix (bind to YAML)
+
+| Tier | Model | Warning |
+| --- | --- | --- |
+| quick_edit, research_docs, cursor_meta, docs_office | Composer 2.5 | docs_office academic → paper row |
+| default_code | Auto / Composer 2.5 | none |
+| frontend_design, paper, science_stats, refactor_architecture, long_agent | Grok 4.7 | use `exhausted_policy.warnings_ru` |
+| parallel_roles | `role_map_exhausted` | scientist/reviewer/… → Grok |
+
+**Mandatory RU for science_stats on Cursor-only** (in `почему` / `действие`):
+
+```text
+Other Models недоступен — нет Sonnet/Opus; ответ на Grok. Перепроверь цифры и выводы.
+```
+
+**Display:** `mode=eco` or `budget=exhausted` + Cursor display name only.
 
 ## HITL — Fable
 
@@ -169,9 +186,9 @@ orchestrator_route task_type=<tier> model=<display> reason=<why≤120> mode=<mod
 
 ## Embedded fallback (if YAML missing)
 
-- eco / quick_edit / default_code / cursor_meta → Composer 2.5 or Auto
+- eco routine (quick_edit, default_code, research_docs, cursor_meta, docs_office) → Composer 2.5 / Auto
+- eco quality (science_stats, paper, frontend_design, refactor, long_agent) → Grok 4.7 + warnings
 - science_stats / paper (budget OK) → Claude Sonnet 5
 - refactor_architecture / long_agent (budget OK) → Claude Opus 5
 - max hard → GPT-5.6 Sol or Claude Opus 5
-- blocked/exhausted → Grok 4.7 or Composer 2.5
 - Fable → ask first

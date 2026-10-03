@@ -6,9 +6,10 @@ Long-horizon evaluation of the Cursor Model Orchestrator under Pro (~$20 Other M
 
 | File | Purpose |
 | --- | --- |
-| [llm-routing-landscape-2026-10.md](llm-routing-landscape-2026-10.md) | Primary-source landscape (RouteLLM, FrugalGPT, AutoMix, Cursor Router, practical tools) |
-| [brainstorm-register.md](brainstorm-register.md) | Candidate directions D1–D12 (ideas, not findings) |
-| [hypotheses.md](hypotheses.md) | Candidate hypotheses H1–H5 |
+| [llm-routing-landscape-2026-10.md](llm-routing-landscape-2026-10.md) | Primary-source landscape (RouteLLM, FrugalGPT, AutoMix, Cursor Router) |
+| [orchestrator-ecosystem-2026-10.md](orchestrator-ecosystem-2026-10.md) | GitHub + skills.sh orchestrators; transferable ideas D13–D21 |
+| [brainstorm-register.md](brainstorm-register.md) | Candidate directions D1–D21 (ideas, not findings) |
+| [hypotheses.md](hypotheses.md) | Candidate hypotheses H1–H8 |
 | [../roadmap.md](../roadmap.md) | Phased program 0–5 + gates + metrics |
 
 ## Weekly metrics (minimal)

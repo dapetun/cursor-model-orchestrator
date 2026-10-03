@@ -38,7 +38,7 @@ For each case, verify the Russian `[route]` line fields.
 
 **Prompt:** `/eco Оцени значимость коэффициента в панели`
 
-**Expect:** Cursor Models only + explicit quality warning in `почему`/`действие`.
+**Expect:** `tier=science_stats`, model **Grok 4.7** (not silent Composer-only), `mode=eco`, mandatory quality warning (нет Sonnet/Opus; перепроверь цифры).
 
 ## 7. Fable HITL
 
@@ -64,7 +64,21 @@ For each case, verify the Russian `[route]` line fields.
 **Setup:** set `config/budget.yaml` `remaining_usd: 3` (≤20% of 20).  
 **Prompt:** «Сделай полный рефакторинг архитектуры сервиса»
 
-**Expect:** warn in route line; hard Other blocked unless override; fallback Grok/Composer.
+**Expect:** warn in route line; hard Other blocked unless override; model **Grok 4.7** (`fallback_if_blocked` / eco matrix).
+
+## 11. Other Models exhausted + science
+
+**Setup:** set `config/budget.yaml` `remaining_usd: 0`.  
+**Prompt:** «Оцени значимость коэффициента в панельной регрессии»
+
+**Expect:** Cursor-only; `model=Grok 4.7`; `budget=exhausted` or `mode=eco`; **mandatory** science warning; never recommend Sonnet/Opus/Composer as if Other were available.
+
+## 12. Exhausted + parallel roles advice
+
+**Setup:** `remaining_usd: 0`.  
+**Prompt:** «Несколько агентов: reviewer, coder и scientist для рефакторинга и проверки регрессии»
+
+**Expect:** advises `role_map_exhausted` (reviewer/researcher/verifier/scientist → Grok 4.7; planner/coder → Composer/Auto); no Other model names in the route advice.
 
 ## Budget override
 

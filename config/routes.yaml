@@ -25,6 +25,43 @@ budget:
     - разреши дорогие модели
     - /max force
 
+# Shared Cursor-only matrix for: /eco, remaining_usd<=0, hard-block@80% (no override).
+# Resolver: use logical_model.eco (and role_map_exhausted for parallel_roles).
+exhausted_policy:
+  pool: cursor
+  same_as: eco
+  triggers:
+    - slash_eco
+    - remaining_usd_lte_0
+    - hard_block_at_warn_ratio
+  display_rule: >
+    [route] must show mode=eco or budget=exhausted and a Cursor display name —
+    never a phantom Other model.
+  warnings_ru:
+    science_stats: >
+      Other Models исчерпан/заблокирован — нет Sonnet/Opus; ответ на Grok.
+      Перепроверь цифры, формулы и статистические выводы.
+    paper: >
+      Other Models недоступен — текст на Grok (риск качества vs Sonnet).
+    frontend_design: >
+      Other исчерпан — UI на Grok.
+    refactor_architecture: >
+      Other недоступен — рефакторинг на Grok (риск качества).
+    long_agent: >
+      Other недоступен — длинная сессия на Grok; plan → approve; риск бюджета Cursor pool.
+  matrix:
+    quick_edit: cursor.composer
+    default_code: cursor.auto_or_composer
+    research_docs: cursor.composer
+    cursor_meta: cursor.composer
+    docs_office: cursor.composer  # if academic → use paper row
+    frontend_design: cursor.grok_flagship
+    paper: cursor.grok_flagship
+    science_stats: cursor.grok_flagship
+    refactor_architecture: cursor.grok_flagship
+    long_agent: cursor.grok_flagship
+    parallel_roles: role_map_exhausted
+
 modes:
   eco:
     allow_other_models: false
@@ -66,6 +103,7 @@ tiers:
       balance: cursor.auto_or_composer
       eco: cursor.composer
       max: cursor.auto_or_composer
+    fallback_if_blocked: cursor.composer
     notes: Tiny 1-file edits; never spend Other Models.
 
   default_code:
@@ -73,8 +111,9 @@ tiers:
     pool: cursor
     logical_model:
       balance: cursor.auto_or_composer
-      eco: cursor.composer
+      eco: cursor.auto_or_composer
       max: cursor.grok_flagship
+    fallback_if_blocked: cursor.auto_or_composer
     escalate_to: refactor_architecture
 
   refactor_architecture:
@@ -112,10 +151,10 @@ tiers:
     pool: other
     logical_model:
       balance: other.sonnet_strong
-      eco: cursor.composer
+      eco: cursor.grok_flagship
       max: other.opus
-    fallback_if_blocked: cursor.composer
-    notes: Design-sensitive; not trivia tier.
+    fallback_if_blocked: cursor.grok_flagship
+    notes: Design-sensitive; Cursor-only uses Grok (not trivia Composer).
 
   docs_office:
     hard: false
@@ -124,7 +163,8 @@ tiers:
       balance: cursor.auto_or_composer
       eco: cursor.composer
       max: other.sonnet_strong
-    notes: Same router as text/code; bias paper if academic content.
+    fallback_if_blocked: cursor.composer
+    notes: Same router as text/code; bias paper if academic content (then eco→Grok).
 
   research_docs:
     hard: false
@@ -133,7 +173,8 @@ tiers:
       balance: cursor.auto_or_composer
       eco: cursor.composer
       max: other.terra
-    notes: Deep synthesis may escalate to other.terra in max.
+    fallback_if_blocked: cursor.composer
+    notes: Deep synthesis may escalate to other.terra in max when budget OK.
 
   cursor_meta:
     hard: false
@@ -142,6 +183,7 @@ tiers:
       balance: cursor.composer
       eco: cursor.composer
       max: cursor.grok_flagship
+    fallback_if_blocked: cursor.composer
     escalate_to: refactor_architecture
 
   long_agent:
@@ -165,7 +207,14 @@ tiers:
       researcher: other.terra
       verifier: other.sonnet_strong
       scientist: other.opus
-    notes: v0 recommends role→model; v1 spawns subagents.
+    role_map_exhausted:
+      planner: cursor.composer
+      coder: cursor.auto_or_composer
+      reviewer: cursor.grok_flagship
+      researcher: cursor.grok_flagship
+      verifier: cursor.grok_flagship
+      scientist: cursor.grok_flagship
+    notes: v0 recommends role→model; use role_map_exhausted when Cursor-only.
 
 project_type_nudges:
   ds:

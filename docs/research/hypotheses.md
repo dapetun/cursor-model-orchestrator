@@ -64,11 +64,48 @@
 | Rivals | BoN gains are placebo (attention); single Opus already saturates quality |
 | Falsify if | Capped BoN does not improve journal, or cap still exhausts budget |
 
+## H6 — Plan shapes beat flat role lists
+
+| Field | Content |
+| --- | --- |
+| Statement | Mapper/specialist/pipeline shapes (D13) reduce Other Models $ and reopen-fix loops vs always spawning a fixed role set |
+| Claim type | Comparative |
+| Status | `candidate` |
+| Linked directions | D13, D16 |
+| Prediction | Fewer useless specialist calls on single-concern tasks |
+| Rivals | Planner overhead costs more than shapes save |
+| Falsify if | Other $ or latency rises without quality gain |
+
+## H7 — Compaction preserves quality at lower tokens
+
+| Field | Content |
+| --- | --- |
+| Statement | Compact handoffs between hops (D17) cut tokens ≥30% on multi-hop work without raising science-journal errors |
+| Claim type | Comparative |
+| Status | `candidate` |
+| Linked directions | D17, D18 |
+| Prediction | Tokens/hop down; journal not worse |
+| Rivals | Compaction drops critical stats context → more silent errors |
+| Falsify if | Journal worsens or agents frequently re-request dropped context |
+
+## H8 — Critique stage beats BoN for reviews
+
+| Field | Content |
+| --- | --- |
+| Statement | Single strong model + critique specialist (D15) matches capped BoN (H5) on review quality at lower Other $ |
+| Claim type | Comparative |
+| Status | `candidate` |
+| Linked directions | D15, D6, D21 |
+| Prediction | On review tasks, critique path ≤ BoN spend with similar reopen rate |
+| Rivals | Critique correlates errors; BoN diversity needed |
+| Falsify if | Critique worse on reopen/journal at similar or higher spend |
+
 ## Visible nulls / rivals (global)
 
 - Quality gains from BoN are placebo (attention effect).
 - Built-in Auto/Router alone matches custom policy for your mix.
 - Hindsight spam harms recall more than routing helps.
+- External Anthropic/OpenRouter orchestrators “save” Cursor Other Models while billing a second wallet unnoticed.
 
 ## Preregistration sketch (exploratory)
 

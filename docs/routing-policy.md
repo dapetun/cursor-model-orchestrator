@@ -39,9 +39,38 @@
 - science_stats / paper → Claude Opus 5
 - refactor / long_agent → GPT-5.6 Sol or Claude Opus 5
 
-### eco / exhausted / hard-block
+### eco / exhausted / hard-block (one shared Cursor-only matrix)
 
-All → Composer 2.5 or Grok 4.7, with quality warning on science_stats.
+**Triggers (same resolver):** `/eco`, `remaining_usd <= 0`, hard-block at 80% spent without override.
+
+Canonical source: `exhausted_policy` + `logical_model.eco` in [`config/routes.yaml`](../config/routes.yaml).
+
+| Tier | Cursor-only model | RU warning |
+| --- | --- | --- |
+| `quick_edit` | Composer 2.5 | none |
+| `default_code` | Auto / Composer 2.5 | none |
+| `research_docs` | Composer 2.5 | none |
+| `cursor_meta` | Composer 2.5 | none |
+| `docs_office` | Composer 2.5 | if academic → use `paper` row |
+| `frontend_design` | Grok 4.7 | Other исчерпан — UI на Grok |
+| `paper` | Grok 4.7 | quality risk vs Sonnet |
+| `science_stats` | Grok 4.7 | **mandatory:** нет Sonnet/Opus; перепроверь цифры |
+| `refactor_architecture` | Grok 4.7 | quality risk |
+| `long_agent` | Grok 4.7 | quality + plan→approve |
+| `parallel_roles` | `role_map_exhausted` | list role→Cursor model |
+
+**Exhausted role remap** (`parallel_roles.role_map_exhausted`):
+
+| Role | Model |
+| --- | --- |
+| planner | Composer 2.5 |
+| coder | Auto / Composer 2.5 |
+| reviewer | Grok 4.7 |
+| researcher | Grok 4.7 |
+| verifier | Grok 4.7 |
+| scientist | Grok 4.7 (+ science warning) |
+
+**Display rule:** `[route]` shows `mode=eco` or `budget=exhausted` and a **Cursor** display name — never a phantom Other model.
 
 ## HITL
 
@@ -51,11 +80,11 @@ Only **Claude Fable** requires confirmation. Opus/Sol may auto on hard tiers whe
 
 See `config/budget.yaml`:
 
-- warn + block hard Other at 80% spent
-- force eco at $0 remaining
+- warn + block hard Other at 80% spent → Cursor-only matrix above
+- force eco at $0 remaining → same matrix
 - override: `/max force` or «разреши дорогие модели»
 
-Manual remaining updates in v0; usage scrape is v3.
+Manual remaining updates in v0; usage scrape is v3. When Other is empty and science is critical, Phase 3 documents BYOK / wait-for-reset as an explicit user choice after warning — never silent Other routing without budget/BYOK.
 
 ## Cascade matrix (v2 — not executed in v0)
 

@@ -4,7 +4,7 @@
 
 **Decision owner:** Даниил · **Audience:** personal now → team later · **Config/docs language:** English · **User-facing route line:** Russian
 
-Companion artifacts: [research/](research/README.md) (landscape, brainstorm D1–D12, hypotheses H1–H5).
+Companion artifacts: [research/](research/README.md) (landscape, ecosystem D13–D21, brainstorm D1–D21, hypotheses H1–H8).
 
 This document is a **program plan**. Phase outcomes are not pre-validated findings.
 
@@ -41,37 +41,45 @@ flowchart LR
 
 **Status:** v0 implemented (recommend-only skill + YAML).
 
-- Commit and run [acceptance-v0.md](acceptance-v0.md)
+- **Exhausted matrix shipped:** per-tier Cursor-only models when Other Models empty / `/eco` / hard-block@80% (`exhausted_policy` in [`config/routes.yaml`](../config/routes.yaml); table in [routing-policy.md](routing-policy.md))
+- Run [acceptance-v0.md](acceptance-v0.md) including scenarios 11–12 (exhausted science + role remap)
 - Weekly metrics + science journal
 - Tune keyword false positives in classifier / skill
 - Keep budget warn@80% + hard-other block (`config/budget.yaml`)
 
-**Aligns:** D1, D8 · **Tests:** H1 (exploratory)
+- Lean token/pool impact field beside `[route]` / Hindsight (D18); machine route fields `{tier, model, reason}` (D19)
+
+**Aligns:** D1, D8, D18, D19 · **Tests:** H1 (exploratory)
 
 ### Phase 1 — Execution helpers
 
 - Spawn Task / Cursor SDK subagents with per-role models (scientist / reviewer / coder / verifier)
+- **Plan shapes** (mapper / specialist / pipeline / hybrid) + **splitter** before spawn (D13, D16)
+- **Compact handoffs** between hops (D17); machine `[route]` fields `{tier, model, reason}` (D19)
 - Decompose mixed prompts into parallel roles
 - Keep chat-switch hint (skill still cannot force picker)
 - Optional GitNexus `detect_changes` after route on coding tasks
+- Optional: MCP propose→confirm→execute (D14); companion obra parallel-agent skills without overriding cost policy (D20)
 
-**Aligns:** D2, D9 · **Tests:** H2
+**Aligns:** D2, D9, D13, D16, D17, D19 · **Tests:** H2, H6, H7  
+**See:** [orchestrator-ecosystem-2026-10.md](research/orchestrator-ecosystem-2026-10.md)
 
 ### Phase 2 — Quality amplifiers under caps
 
 - Code cascade: lint/tests gate then escalate (FrugalGPT-style for verifiable work)
 - Prose/docs heuristic checklist before Other Models spend
 - `/max` best-of-N with **hard monthly BoN cap**; forbidden in `/eco`
+- Specialist **critique/merge** (D15) and capped **council** (D21) as BoN alternatives for reviews
 - AutoMix-like self-verify **only off** `science_stats` final path (D5 restricted)
 - Science remains strong-first
 
-**Aligns:** D3, D4, D5 (restricted), D6 · **Tests:** H3, H5
+**Aligns:** D3, D4, D5 (restricted), D6, D15, D21 · **Tests:** H3, H5, H8
 
 ### Phase 3 — Ops
 
 - Best-effort parse of Cursor usage into `budget.yaml`
-- BYOK notes when Other Models empty (optional)
 - Spend-controller polish (remaining-$ policy)
+- **When Other Models empty and science/paper is critical:** after the Cursor-only (Grok) warning, offer an explicit user choice — wait for monthly reset, or enable BYOK — **never** silently route to Other Models without budget/BYOK. Document the phrases in skill/budget docs when BYOK wiring lands.
 
 **Aligns:** D8
 
@@ -99,6 +107,7 @@ flowchart LR
 | --- | --- |
 | D11 Local/offline models | Explicitly post-MVP; not needed for daily Cursor path |
 | D12 LiteLLM/OpenRouter primary gateway | Conflicts with skill-first daily Cursor convenience |
+| Multi-CLI daily routing (TGs / OmniRoute as default) | Second wallet + leaves Cursor-native path; optional escape hatch only |
 
 ## Literature anchors (located evidence — see landscape note)
 

@@ -46,12 +46,24 @@ All rows below are **ideas / proposals**. They are not validated results.
 | D10 | Team packaging of skill+YAML after personal metrics stabilize | discussion | AI-assisted | Phase 5 |
 | D11 | Local/offline models | discussion | AI-assisted | parked |
 | D12 | External LiteLLM/OpenRouter as primary gateway | discussion | literature-inspired | parked |
+| D13 | Plan shapes: mapper / specialist / pipeline / hybrid (from cursor-agent-orchestrator-mcp) | discussion | literature-inspired | advance (Phase 1) |
+| D14 | Optional MCP propose→confirm→execute for Phase 1 (same gates as skill) | discussion | literature-inspired | optional Phase 1 |
+| D15 | Specialist DAG + critique merge for `/max` reviews (dispatch-mcp pattern) under tier matrix | discussion | literature-inspired | advance (Phase 2) |
+| D16 | Splitter step before spawn (which roles fire) — agent-squared pattern | discussion | literature-inspired | advance (Phase 1) |
+| D17 | Compact handoff JSON between subagent hops (TOMAPE-style) | discussion | literature-inspired | advance (Phase 1–2) |
+| D18 | Lean token/pool impact report beside `[route]` / Hindsight | discussion | literature-inspired | advance (Phase 0 measure) |
+| D19 | Machine route fields `{tier, model, score?, reason}` (tgs-router-shaped) for learning | discussion | literature-inspired | advance (Phase 0–4) |
+| D20 | Companion install of obra parallel-agent skills; our skill stays cost authority | discussion | mixed | Phase 1 optional |
+| D21 | `/max` council (2–3 perspectives) only under BoN monthly cap | discussion | literature-inspired | Phase 2 under cap |
 
 ## Working prioritization (decision aid, not truth)
 
-Advance: **D1 → D2 → D3/D8 → D6 → D7 → D10**.  
-Park: **D11, D12**.  
-Restrict: **D5** (never as science final path).
+Advance: **D1 → D18/D19 → D2/D13/D16/D17 → D3/D8 → D15/D6/D21 → D7 → D10**.  
+Optional: **D14, D20**.  
+Park: **D11, D12**, multi-CLI daily routing.  
+Restrict: **D5** (never as science final path); **D21** only with hard BoN cap.
+
+Ecosystem scan: [orchestrator-ecosystem-2026-10.md](orchestrator-ecosystem-2026-10.md).
 
 ## Adversarial notes
 
@@ -60,8 +72,11 @@ Restrict: **D5** (never as science final path).
 - Arena-trained learned routers may not transfer to RU academic/econometrics prompts (`assumption`; see landscape note OOD evidence for RouteLLM).
 - Cascades add latency against long agent sessions (`idea`).
 - Hindsight spam can hurt recall more than routing helps (`rival` to logging-heavy designs).
+- Companion skills (obra/warp) can override cost policy if installed without our skill as authority (`idea`).
+- External gateways “save” Cursor Other Models while billing a second wallet (`rival` to D12 / OmniRoute-as-default).
 
 ## Literature cross-check
 
-Primary-source summary: [llm-routing-landscape-2026-10.md](llm-routing-landscape-2026-10.md).  
-After evidence check, no direction was auto-selected as “winner”; phases encode the working order above.
+Primary-source summaries: [llm-routing-landscape-2026-10.md](llm-routing-landscape-2026-10.md), [orchestrator-ecosystem-2026-10.md](orchestrator-ecosystem-2026-10.md) (GitHub + skills.sh, 2026-10-03).  
+Post-check reopen: D13–D21 added from ecosystem scan; prioritization reordered to put measure fields (D18/D19) early.  
+No direction auto-selected as “winner”; phases encode the working order above.
