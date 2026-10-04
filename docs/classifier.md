@@ -147,9 +147,18 @@ If ≥2 high-level domains appear (e.g. paper + science_stats + default_code):
 2. Still emit a single primary `[route]` using highest severity.
 3. Optionally list role→model advice (from `routes.yaml` `parallel_roles.role_map`).
 
+## Phase / роль (after tier pick)
+
+Resolve `роль` from `phases` in `routes.yaml` (plan / execute / analyze). This **does** change which logical model goes into `[route] model=`:
+
+- `план` / `анализ` → `logical_model[mode]`
+- `код` → `executor_logical[mode]` (Composer / Grok)
+
+Never pick Other for `роль=код`.
+
 ## Plan shapes (after tier pick)
 
-Map primary tier → `shape` via `plan_shapes.by_tier` in `routes.yaml` (default `none`). This does **not** change severity or model selection. If `splitter_hint` is true and `shape != none`, name roles in `действие` only — never spawn in v0.1.
+Map primary tier → `shape` via `plan_shapes.by_tier` in `routes.yaml` (default `none`). This does **not** change severity. If `splitter_hint` is true and `shape != none`, name roles in `действие` only — never spawn.
 
 ## Project nudges
 

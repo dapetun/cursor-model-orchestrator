@@ -1,6 +1,6 @@
 # Cursor Model Orchestrator
 
-**What it is:** A recommend-only Cursor skill that classifies each prompt with deterministic rules (keywords + project type) and recommends a cost-aware model under the Cursor Pro **Other Models** (~$20) budget. It overlays Auto/Router for routine work; it does not replace Auto and does not force the model picker.
+**What it is:** A recommend-only Cursor skill that classifies each prompt with deterministic rules (keywords + project type) and recommends a cost-aware model under the Cursor Pro **Other Models** (~$20) budget. **Doctrine:** Other Models elaborate plans; Composer / Grok execute code and file ops. It overlays Auto/Router for routine work; it does not replace Auto and does not force the model picker.
 
 **Last updated:** 2026-10-03 · **License:** [MIT](LICENSE) · **Release:** [v0.1.1](https://github.com/dapetun/cursor-model-orchestrator/releases/tag/v0.1.1)
 
@@ -17,8 +17,8 @@ Install stack order: (1) this repo `-Profile stack` → (2) [cursor-hindsight-on
 
 ## Goals
 
-- Protect the **Other Models** pool (~$20/mo) from trivia
-- Force strong models for science/stats (no cheap-first)
+- Protect the **Other Models** pool (~$20/mo) from trivia **and** from writing code (plan → Composer handoff)
+- Force strong models for science/stats **analysis** (no cheap-first); implement stats code on Composer
 - Short Russian explanation of every routing decision (`[route]`)
 - Long-horizon research: v0 recommend-only → v1 subagents → v2 cascade/best-of-N → v3 usage ops
 
@@ -100,7 +100,15 @@ No. With stack, the skill may hint impact / `detect_changes` when GitNexus is av
 - [Roadmap (phases 0–5)](docs/roadmap.md)
 - [Research folder](docs/research/README.md)
 - [llms.txt](llms.txt) — short summary for AI tools
+- [Legal & compliance](docs/legal/README.md) — privacy, cookies, AI Act disclosure, ДОУ checklist
 
-## License
+## Privacy (stack)
 
-MIT — see [LICENSE](LICENSE). Hindsight and GitNexus are separate projects.
+Optional Hindsight retain logs **lean route metadata only**. It must never retain full prompts, source code, secrets, or PII. Details: [docs/hindsight-schema.md](docs/hindsight-schema.md), [docs/legal/privacy.md](docs/legal/privacy.md).
+
+## License & notices
+
+- **License:** MIT — [LICENSE](LICENSE) (`SPDX-License-Identifier: MIT`)
+- **Trademarks / third parties:** [NOTICE](NOTICE) — Cursor and model names are marks of their owners; this project is independent and unofficial
+- **Contributing / DCO:** [CONTRIBUTING.md](CONTRIBUTING.md)
+- Hindsight and GitNexus are separate projects with their own terms

@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
 """Fetch Cursor models & pricing docs and refresh config/models.generated.yaml.
 
 Soft-fails: on parse/network errors, keeps the previous file and exits non-zero.
+
+Privacy: downloads public Cursor documentation only. Does not collect, upload,
+or log end-user personal data, prompts, or secrets.
 """
 
 from __future__ import annotations

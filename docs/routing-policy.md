@@ -4,51 +4,65 @@
 
 - **Plan:** Cursor Pro ($20) — Cursor Models pool + Other Models ~$20
 - **Daily driver:** Auto/Router when available; this policy overlays escalation rules
-- **Conflict resolution:** quality under a hard Other Models budget
+- **Doctrine:** Other Models **plan/analyze**; Composer / Grok **execute** code and file ops
+- **Conflict resolution:** quality under a hard Other Models budget — spend Other on thinking, not on typing code
 - **User language:** Russian explanations; configs/docs English
+- **Privacy:** stack Hindsight retain is lean route metadata only — never prompts/PII ([hindsight-schema.md](hindsight-schema.md), [legal/privacy.md](legal/privacy.md))
+- **Scope:** recommend-only overlay; not a hosted AI product by itself ([legal/ai-act-disclosure.md](legal/ai-act-disclosure.md))
 
 ## Decision pipeline
 
 1. Detect slash mode (`eco` / `max` / default `balance`)
 2. Detect project type (tags → paths → markers)
 3. Classify task tier (keywords + severity)
-4. Apply budget guard → `budget` (`ok` / `warn` / `exhausted`) and resolved `pool`
-5. Map tier+mode → logical model → display name
-6. Resolve `shape` from `plan_shapes.by_tier` (hint only; no spawn in v0.1)
-7. Fable HITL if needed
-8. Emit Russian `[route]` with machine fields + lean Hindsight log
-9. Continue plan → approve
+4. Detect **phase** (`роль=план|код|анализ`) from `phases` in `routes.yaml`
+5. Apply budget guard → `budget` (`ok` / `warn` / `exhausted`) and resolved `pool`
+6. Map: plan/analyze → `logical_model[mode]`; execute → `executor_logical[mode]` → display name
+7. Resolve `shape` from `plan_shapes.by_tier` (hint only; no spawn)
+8. Fable HITL if needed
+9. Emit Russian `[route]` with machine fields + lean Hindsight log
+10. Continue: planner elaborates → approve → switch to Composer/Grok to execute
 
-### [route] machine fields (v0.1)
+### [route] machine fields (v0.2)
 
 ```text
-[route] project=… tier=… model=… mode=… pool=… budget=… shape=…
+[route] project=… tier=… model=… mode=… pool=… budget=… shape=… роль=<план|код|анализ>
 почему: …
 действие: …
 ```
 
-Required every turn: `tier`, `model`, `mode`, `pool`, `budget`, `shape`.
+Required every turn: `tier`, `model`, `mode`, `pool`, `budget`, `shape`, `роль`.
+
+## Doctrine summary
+
+| Never Other for | Prefer Other for |
+| --- | --- |
+| write_code, apply_patches, file_edits | detailed plans, architecture, science Q&A, design briefs |
+| routine reads in execute phase | reviewing plans / specs |
+
+Handoff (RU): after approve, switch chat to Composer 2.5 and run the plan step by step.
 
 ## Tier matrix (balance, budget OK)
 
-| Tier | Pool | Model | Cheap-first? |
+| Tier | Pool | Plan / analyze | Execute (код) |
 | --- | --- | --- | --- |
-| quick_edit | cursor | Auto / Composer 2.5 | n/a |
-| default_code | cursor | Auto / Composer 2.5 | n/a |
-| research_docs | cursor | Auto / Composer 2.5 | n/a |
-| cursor_meta | cursor | Composer 2.5 | n/a |
-| docs_office | cursor/other | Auto / Composer (Sonnet if academic) | no special dump |
-| frontend_design | other | Claude Sonnet 5 | no |
-| paper | other | Claude Sonnet 5 | no |
-| science_stats | other | Claude Sonnet 5 | **never** |
-| refactor_architecture | other | Claude Opus 5 | no |
-| long_agent | other | Claude Opus 5 | no |
-| parallel_roles | mixed | role map (advise in v0) | n/a |
+| quick_edit | cursor | — | Auto / Composer 2.5 |
+| default_code | cursor | — | Auto / Composer 2.5 |
+| research_docs | cursor | Composer (or Sonnet if deep) | Composer 2.5 |
+| cursor_meta | cursor | — | Composer 2.5 |
+| docs_office | cursor/other | Sonnet if academic prose | Composer 2.5 |
+| frontend_design | mixed | Claude Sonnet 5 | Grok 4.7 |
+| paper | other | Claude Sonnet 5 | Composer if code tooling |
+| science_stats | mixed | Claude Sonnet 5 | Composer 2.5 |
+| refactor_architecture | mixed | Claude Opus 5 | Composer 2.5 |
+| long_agent | mixed | Claude Opus 5 | Composer 2.5 |
+| parallel_roles | mixed | role map (advise) | coder = Composer |
 
-### max upgrades
+### max upgrades (planners only)
 
 - science_stats / paper → Claude Opus 5
 - refactor / long_agent → GPT-5.6 Sol or Claude Opus 5
+- execute path unchanged
 
 ### eco / exhausted / hard-block (one shared Cursor-only matrix)
 
@@ -74,8 +88,8 @@ Canonical source: `exhausted_policy` + `logical_model.eco` in [`config/routes.ya
 
 | Role | Model |
 | --- | --- |
-| planner | Composer 2.5 |
-| coder | Auto / Composer 2.5 |
+| planner | Grok 4.7 |
+| coder | Composer 2.5 |
 | reviewer | Grok 4.7 |
 | researcher | Grok 4.7 |
 | verifier | Grok 4.7 |
@@ -85,7 +99,7 @@ Canonical source: `exhausted_policy` + `logical_model.eco` in [`config/routes.ya
 
 ## HITL
 
-Only **Claude Fable** requires confirmation. Opus/Sol may auto on hard tiers when allowed.
+Only **Claude Fable** requires confirmation. Opus/Sol may auto as planners on hard tiers when allowed.
 
 ## Budget
 
@@ -117,21 +131,21 @@ Manual remaining updates in v0; usage scrape is v3. When Other is empty and scie
 
 | Role | Model |
 | --- | --- |
-| planner | Composer 2.5 |
-| coder | Auto / Composer 2.5 |
+| planner | Claude Opus 5 |
+| coder | Composer 2.5 |
 | reviewer | Claude Sonnet 5 |
 | researcher | GPT-5.6 Terra |
-| verifier | Claude Sonnet 5 |
+| verifier | Grok 4.7 |
 | scientist | Claude Opus 5 |
 
-## Plan shapes (v0.1 — recommend hints only)
+## Plan shapes (recommend hints only)
 
 Canonical source: `plan_shapes` in [`config/routes.yaml`](../config/routes.yaml).
 
 | Tier | shape | Notes |
 | --- | --- | --- |
 | `parallel_roles` | `specialist` | Splitter lists role_map roles; **do not spawn** |
-| `refactor_architecture` | `pipeline` | Hint: coder→reviewer→verifier |
+| `refactor_architecture` | `pipeline` | Hint: planner→coder→reviewer→verifier |
 | `long_agent` | `hybrid` | Hint: planner→coder→reviewer |
 | `science_stats` | `none` | Single strong path |
 | other tiers | `none` | — |

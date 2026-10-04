@@ -2,7 +2,7 @@
 
 > Recommend-only Cursor Pro model router skill (YAML tiers, Russian [route] line, Other Models budget).
 
-Classifies prompts with deterministic rules and recommends a cost-aware model. Overlay on Auto/Router — does not force the picker. MIT.
+Classifies prompts with deterministic rules and recommends a cost-aware model. Doctrine: Other Models plan in detail; Composer/Grok execute code. Overlay on Auto/Router — does not force the picker. MIT.
 
 ## Profiles
 
@@ -17,7 +17,10 @@ Stack Hindsight lifecycle (not this repo): https://github.com/dapetun/cursor-hin
 - [Core](https://github.com/dapetun/cursor-model-orchestrator/blob/main/docs/integrations/core.md)
 - [Stack](https://github.com/dapetun/cursor-model-orchestrator/blob/main/docs/integrations/stack.md)
 - [Routing policy](https://github.com/dapetun/cursor-model-orchestrator/blob/main/docs/routing-policy.md)
+- [Legal](https://github.com/dapetun/cursor-model-orchestrator/blob/main/docs/legal/README.md): privacy, cookies, AI Act disclosure
 - [LICENSE](https://github.com/dapetun/cursor-model-orchestrator/blob/main/LICENSE): MIT
+- [NOTICE](https://github.com/dapetun/cursor-model-orchestrator/blob/main/NOTICE): trademarks
+- [CONTRIBUTING](https://github.com/dapetun/cursor-model-orchestrator/blob/main/CONTRIBUTING.md): DCO
 
 ## Install (short)
 

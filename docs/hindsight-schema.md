@@ -6,7 +6,7 @@ Used when **stack** profile has `hindsight.enabled: true` and Hindsight MCP is a
 
 Store enough to evaluate the orchestrator later without flooding memory.
 
-## Retain payload (v0.1)
+## Retain payload (v0.2)
 
 Call Hindsight `retain` with a single short string:
 
@@ -14,6 +14,7 @@ Call Hindsight `retain` with a single short string:
 orchestrator_route task_type=<tier> tier=<tier> model=<display> logical=<key>
 reason=<why> mode=<eco|balance|max> project_type=<type> pool=<cursor|other|mixed>
 budget=<ok|warn|exhausted> shape=<none|mapper|specialist|pipeline|hybrid>
+role=<plan|execute|analyze>
 ```
 
 | Field | Required | Notes |
@@ -28,6 +29,7 @@ budget=<ok|warn|exhausted> shape=<none|mapper|specialist|pipeline|hybrid>
 | `pool` | yes | `cursor` \| `other` \| `mixed` — resolved pool after budget/eco |
 | `budget` | yes | `ok` \| `warn` \| `exhausted` (see below) |
 | `shape` | yes | From `plan_shapes.by_tier` (default `none`) |
+| `role` | yes | `plan` \| `execute` \| `analyze` (maps from `[route] роль=`) |
 
 ### `budget` resolution
 
@@ -46,9 +48,23 @@ Optional metadata:
 
 ## Anti-spam rules
 
-1. **Dedup in-session:** skip retain when `(task_type, model, mode, project_type, pool, budget, shape)` equals the last logged tuple in the current chat.
+1. **Dedup in-session:** skip retain when `(task_type, model, mode, project_type, pool, budget, shape, role)` equals the last logged tuple in the current chat.
 2. **Never log:** full user prompts, source code, file contents, token/cost estimates every turn, stack traces, secrets, PII.
 3. **No outcome spam in v0.1:** do not log success/failure of the downstream task (optional later if curated).
+
+## Privacy invariant (mandatory)
+
+Lean retain is for **routing evaluation**, not identity profiling.
+
+| Allowed in retain text | Forbidden |
+| --- | --- |
+| tier / model / logical / mode / pool / budget / shape | Full user prompt or paraphrase that quotes private content |
+| Short non-identifying `reason` (≤120 chars) | Emails, phones, names, addresses, account IDs |
+| Document id by UTC month | Source code, file paths with secrets, API keys, stack traces |
+
+If a field would require pasting user content to be useful, **omit retain for that turn** rather than violating this table.
+
+See also: [legal/privacy.md](legal/privacy.md).
 
 ## Budget updates
 

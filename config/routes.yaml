@@ -1,5 +1,8 @@
-# Cursor Model Orchestrator — routing policy (v0.1)
+# Cursor Model Orchestrator — routing policy (v0.2)
 # Logical model keys resolve via config/models.generated.yaml
+#
+# Doctrine: Other Models PLAN (detailed briefs); Cursor pool EXECUTES
+# (read/write code, file ops). Never recommend Other for writing code.
 
 version: 1
 
@@ -9,6 +12,26 @@ defaults:
   workflow: plan_then_approve
   daily_driver: auto_overlay
   explain_every_route: true
+  doctrine: planner_executor
+
+# Planner / executor split (personal preference)
+doctrine:
+  name: planner_executor
+  # Other Models: elaborate plans, specs, science Q&A, design decisions — not file edits
+  # Cursor pool (Composer / Grok): read files, write/edit code, routine agent tool work
+  never_other_for:
+    - write_code
+    - apply_patches
+    - file_edits
+    - routine_reads_in_execute_phase
+  executor_default: cursor.composer
+  executor_quality: cursor.grok_flagship   # when Cursor-only quality path needed
+  planner_default: other.sonnet_strong
+  planner_hard: other.opus
+  planner_max: other.sol
+  handoff_ru: >
+    После approve переключи чат на Composer 2.5 и выполни план пошагово.
+    План должен быть достаточно подробным для Composer (файлы, шаги, критерии done).
 
 hitl:
   require_confirm_for:
@@ -118,43 +141,63 @@ tiers:
 
   refactor_architecture:
     hard: true
-    pool: other
+    pool: mixed
+    phase_aware: true
+    # plan → Other; execute → Composer (never Other for code)
     logical_model:
-      balance: other.opus
+      balance: other.opus          # planner phase
       eco: cursor.grok_flagship
       max: other.sol
+    executor_logical:
+      balance: cursor.composer
+      eco: cursor.grok_flagship
+      max: cursor.composer
     fallback_if_blocked: cursor.grok_flagship
+    notes: Planner elaborates multi-file plan; Composer applies edits.
 
   science_stats:
     hard: true
-    pool: other
+    pool: mixed
+    phase_aware: true
     cheap_first: false
+    # Pure Q&A / interpretation → Other answers (role=analyze).
+    # Code/notebook implementation → plan on Other, execute on Composer.
     logical_model:
       balance: other.sonnet_strong
       eco: cursor.grok_flagship
       max: other.opus
+    executor_logical:
+      balance: cursor.composer
+      eco: cursor.grok_flagship
+      max: cursor.composer
     fallback_if_blocked: cursor.grok_flagship
-    notes: Critical reliability — never Composer-only when Other Models available.
+    notes: Never use Other to write stats code; Composer executes detailed plan.
 
   paper:
     hard: true
     pool: other
+    phase_aware: false
     logical_model:
       balance: other.sonnet_strong
       eco: cursor.grok_flagship
       max: other.opus
     fallback_if_blocked: cursor.grok_flagship
-    notes: Journal tech formatting only after user confirms content ready.
+    notes: Prose/content on Other. If task is code for paper tooling → treat as execute on Composer.
 
   frontend_design:
     hard: false
-    pool: other
+    pool: mixed
+    phase_aware: true
     logical_model:
-      balance: other.sonnet_strong
+      balance: other.sonnet_strong   # design plan / UX brief
       eco: cursor.grok_flagship
       max: other.opus
+    executor_logical:
+      balance: cursor.grok_flagship  # UI implementation on Grok
+      eco: cursor.grok_flagship
+      max: cursor.grok_flagship
     fallback_if_blocked: cursor.grok_flagship
-    notes: Design-sensitive; Cursor-only uses Grok (not trivia Composer).
+    notes: Sonnet plans UI; Grok/Composer implements — never Sonnet for bulk file edits.
 
   docs_office:
     hard: false
@@ -188,33 +231,39 @@ tiers:
 
   long_agent:
     hard: true
-    pool: other
+    pool: mixed
+    phase_aware: true
     logical_model:
       balance: other.opus
       eco: cursor.grok_flagship
       max: other.sol
+    executor_logical:
+      balance: cursor.composer
+      eco: cursor.grok_flagship
+      max: cursor.composer
     fallback_if_blocked: cursor.grok_flagship
     remind_plan_approve: true
+    notes: Strong model owns the long plan; Composer runs the steps.
 
   parallel_roles:
     hard: true
     pool: mixed
     v0_behavior: advise_only
     role_map:
-      planner: cursor.composer
-      coder: cursor.auto_or_composer
+      planner: other.opus
+      coder: cursor.composer
       reviewer: other.sonnet_strong
       researcher: other.terra
-      verifier: other.sonnet_strong
+      verifier: cursor.grok_flagship
       scientist: other.opus
     role_map_exhausted:
-      planner: cursor.composer
-      coder: cursor.auto_or_composer
+      planner: cursor.grok_flagship
+      coder: cursor.composer
       reviewer: cursor.grok_flagship
       researcher: cursor.grok_flagship
       verifier: cursor.grok_flagship
       scientist: cursor.grok_flagship
-    notes: v0 recommends role→model; use role_map_exhausted when Cursor-only.
+    notes: Planner/reviewer on Other; coder always Composer (Cursor pool).
 
 project_type_nudges:
   ds:
@@ -230,15 +279,56 @@ project_type_nudges:
   mixed:
     bias_tiers: []
 
-# Plan shapes — recommend-only hints (v0.1). Do not spawn agents from this section.
+# Phase detection — which model to put in [route] model=
+# role=plan → logical_model; role=код → executor_logical; role=анализ → logical_model (Q&A)
+phases:
+  roles:
+    plan: план
+    execute: код
+    analyze: анализ
+  # Heuristics (RU+EN). First match wins after explicit user pin.
+  force_execute_if:
+    - реализуй
+    - выполни план
+    - напиши код
+    - apply the plan
+    - implement
+    - сделай правк
+    - поправь файл
+    - закоммить
+  force_plan_if:
+    - спланируй
+    - составь план
+    - разжуй
+    - подробно опиши
+    - design the approach
+    - предложи архитектуру
+  # Hard tiers without an existing plan in thread → default to plan first
+  default_plan_tiers:
+    - refactor_architecture
+    - long_agent
+    - parallel_roles
+    - frontend_design
+  # Pure Q&A / interpretation (no code) → analyze on Other
+  analyze_tiers:
+    - science_stats
+    - paper
+    - research_docs
+  # Always execute (no Other planner unless user asks plan)
+  always_execute_tiers:
+    - quick_edit
+    - default_code
+    - cursor_meta
+    - docs_office
+
+# Plan shapes — recommend-only hints. Do not spawn agents from this section.
 plan_shapes:
   default: none
-  # when classifier hits these tiers, set shape= in [route] only
   by_tier:
     parallel_roles: specialist
     refactor_architecture: pipeline
     long_agent: hybrid
-    science_stats: none          # single strong path
+    science_stats: none
     quick_edit: none
     default_code: none
     research_docs: none
@@ -246,18 +336,19 @@ plan_shapes:
     docs_office: none
     frontend_design: none
     paper: none
-  splitter_hint: true            # skill: name which roles would fire; do not spawn
+  splitter_hint: true
   splitter_roles:
     specialist: [planner, coder, reviewer, researcher, verifier, scientist]
-    pipeline: [coder, reviewer, verifier]
+    pipeline: [planner, coder, reviewer, verifier]
     hybrid: [planner, coder, reviewer]
     mapper: [planner]
     none: []
 
 # v1+ role spawn defaults (documented for forward compat)
 roles_v1:
+  planner: other.opus
   reviewer: other.sonnet_strong
-  coder: cursor.auto_or_composer
+  coder: cursor.composer
   researcher: other.terra
-  verifier: other.sonnet_strong
+  verifier: cursor.grok_flagship
   scientist: other.opus

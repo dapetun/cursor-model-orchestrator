@@ -42,6 +42,8 @@ Keep `"hindsightApiUrl": "http://127.0.0.1:9077"` in `~/.hindsight/cursor.json`.
 | Hindsight MCP | Skip retain; `[route]` still printed |
 | GitNexus | Skip impact hint; routing unchanged |
 
+**Privacy:** retain must be lean route metadata only — never full prompts, code, secrets, or PII ([hindsight-schema.md](../hindsight-schema.md), [legal/privacy.md](../legal/privacy.md)).
+
 ## Division of responsibility
 
 | Concern | Repo |
