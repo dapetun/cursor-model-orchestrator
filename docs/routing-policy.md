@@ -16,7 +16,7 @@
 2. Detect project type (tags → paths → markers)
 3. Classify task tier (keywords + severity)
 4. Detect **phase** (`роль=план|код|анализ`) from `phases` in `routes.yaml`
-5. Apply budget guard → `budget` (`ok` / `warn` / `exhausted`) and resolved `pool`
+5. Refresh budget snapshot if stale (`sync_budget.py`) → `budget` (`ok` / `warn` / `exhausted`) and resolved `pool`
 6. Map: plan/analyze → `logical_model[mode]`; execute → `executor_logical[mode]` → display name
 7. Resolve `shape` from `plan_shapes.by_tier` (hint only; no spawn)
 8. Fable HITL if needed
@@ -103,13 +103,17 @@ Only **Claude Fable** requires confirmation. Opus/Sol may auto as planners on ha
 
 ## Budget
 
-See `config/budget.yaml`:
+**Policy:** [`config/budget.yaml`](../config/budget.yaml) — thresholds (`warn_at_ratio`, override).
 
-- warn + block hard Other at 80% spent → Cursor-only matrix above
-- force eco at $0 remaining → same matrix
+**Live spend:** `python scripts/sync_budget.py` → gitignored [`config/budget.local.yaml`](../config/budget.local.example.yaml) from Cursor dashboard `apiPercentUsed` (Other Models). Auth: local Cursor `state.vscdb` or `CURSOR_SESSION_TOKEN`. Skill refreshes when older than `sync_ttl_minutes` (60) or on «синхронизируй бюджет» / `/budget sync`.
+
+- `spent_ratio = api_percent_used / 100` when local snapshot exists
+- warn + block hard Other at `warn_at_ratio` (default 0.8) → Cursor-only matrix above
+- force eco when `spent_ratio >= 1` / remaining ≤ 0 → same matrix
 - override: `/max force` or «разреши дорогие модели»
+- Fail-soft: sync error → last local + `budget_source=stale`; never synced → manual `remaining_usd` in `budget.yaml`
 
-Manual remaining updates in v0; usage scrape is v3. When Other is empty and science is critical, Phase 3 documents BYOK / wait-for-reset as an explicit user choice after warning — never silent Other routing without budget/BYOK.
+When Other is empty and science is critical: after the Cursor-only (Grok) warning, offer wait-for-reset or BYOK — **never** silently route to Other without budget/BYOK.
 
 ## Cascade matrix (v2 — not executed in v0)
 

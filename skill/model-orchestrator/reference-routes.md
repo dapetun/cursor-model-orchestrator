@@ -126,3 +126,11 @@ Never without Russian HITL confirm.
 
 После approve переключи чат на Composer 2.5 и выполни план пошагово.
 План должен быть достаточно подробным для Composer (файлы, шаги, критерии done).
+
+## Budget sync
+
+```text
+python scripts/sync_budget.py
+```
+
+Writes `config/budget.local.yaml` (`api_percent_used` = Other Models). Chat: «синхронизируй бюджет» / `/budget sync`. Auth: Cursor `state.vscdb` or `CURSOR_SESSION_TOKEN`. Never print tokens.

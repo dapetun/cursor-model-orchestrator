@@ -49,6 +49,18 @@ Copy-Item -Force $IntegrationsActive $IntegrationsSkill
 Write-Host "Installed skill to: $Dst"
 Write-Host "InstallProfile: $InstallProfile"
 Write-Host "ORCHESTRATOR_ROOT -> $RepoRoot"
+
+$syncScript = Join-Path $RepoRoot "scripts\sync_budget.py"
+Write-Host "Budget: run  python scripts/sync_budget.py  (Other Models % → config/budget.local.yaml)"
+$py = Get-Command python -ErrorAction SilentlyContinue
+if ($py -and (Test-Path $syncScript)) {
+    try {
+        & python $syncScript 2>&1 | ForEach-Object { Write-Host $_ }
+    } catch {
+        Write-Host "Budget sync skipped (non-fatal): $($_.Exception.Message)"
+    }
+}
+
 if ($InstallProfile -eq "stack") {
     Write-Host "Next: install Hindsight ondemand - https://github.com/dapetun/cursor-hindsight-ondemand"
     Write-Host "Optional: GitNexus MCP + analyze (see docs/integrations/stack.md)"

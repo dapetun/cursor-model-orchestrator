@@ -77,8 +77,8 @@ flowchart LR
 
 ### Phase 3 — Ops
 
-- Best-effort parse of Cursor usage into `budget.yaml`
-- Spend-controller polish (remaining-$ policy)
+- **Landed (best-effort):** `scripts/sync_budget.py` → `budget.local.yaml` via unofficial `usage-summary` (`apiPercentUsed` = Other Models); skill TTL refresh
+- Spend-controller polish (remaining-$ / % policy)
 - **When Other Models empty and science/paper is critical:** after the Cursor-only (Grok) warning, offer an explicit user choice — wait for monthly reset, or enable BYOK — **never** silently route to Other Models without budget/BYOK. Document the phrases in skill/budget docs when BYOK wiring lands.
 
 **Aligns:** D8

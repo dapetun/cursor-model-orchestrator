@@ -2,7 +2,7 @@
 
 > Recommend-only Cursor Pro model router skill (YAML tiers, Russian [route] line, Other Models budget).
 
-Classifies prompts with deterministic rules and recommends a cost-aware model. Doctrine: Other Models plan in detail; Composer/Grok execute code. Overlay on Auto/Router — does not force the picker. MIT.
+Classifies prompts with deterministic rules and recommends a cost-aware model. Doctrine: Other Models plan in detail; Composer/Grok execute code. Budget: sync Other Models % from Cursor via scripts/sync_budget.py. Overlay on Auto/Router — does not force the picker. MIT.
 
 ## Profiles
 

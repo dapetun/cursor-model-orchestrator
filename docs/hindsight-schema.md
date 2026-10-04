@@ -68,13 +68,15 @@ See also: [legal/privacy.md](legal/privacy.md).
 
 ## Budget updates
 
-If the user updates remaining budget in chat, you may retain once:
+If the user updates remaining budget in chat, or after a successful sync, you may retain once:
 
 ```text
-orchestrator_budget remaining_usd=<n> hard_other_override=<true|false>
+orchestrator_budget remaining_usd=<n> api_percent_used=<n> spent_ratio=<n> source=<synced|stale|manual> hard_other_override=<true|false>
 ```
 
 with `document_id` `cursor-model-orchestrator-budget`.
+
+**Never** retain session tokens, cookies, JWTs, or email from auth probes.
 
 ## Recall usage
 

@@ -31,7 +31,8 @@ Restart Cursor or open a new Agent chat.
 | `config/integrations.yaml` | `profile: core` after install |
 | `config/routes.yaml` | tiers, plan_shapes, exhausted matrix |
 | `config/projects.yaml` | local (gitignored); start from `projects.example.yaml` |
-| `config/budget.yaml` | Other Models remaining (manual) |
+| `config/budget.yaml` | Thresholds (`warn_at_ratio`, monthly heuristic) |
+| `config/budget.local.yaml` | Live Other Models % from `scripts/sync_budget.py` (gitignored) |
 
 ## Verify
 

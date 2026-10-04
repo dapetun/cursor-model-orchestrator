@@ -41,12 +41,21 @@ hitl:
     Подтвердить использование Fable? (да/нет)
 
 budget:
+  # Prefer live snapshot, then policy thresholds
+  source_local: config/budget.local.yaml
   source: config/budget.yaml
+  sync_script: scripts/sync_budget.py
+  sync_ttl_minutes: 60
   on_exhausted: force_eco
   on_warn_ratio: warn_and_block_hard_other
   override_phrases_ru:
     - разреши дорогие модели
     - /max force
+  sync_phrases_ru:
+    - синхронизируй бюджет
+    - /budget sync
+  # spent_ratio from local.api_percent_used/100 when local fresh; else remaining_usd/monthly
+  spend_field: api_percent_used
 
 # Shared Cursor-only matrix for: /eco, remaining_usd<=0, hard-block@80% (no override).
 # Resolver: use logical_model.eco (and role_map_exhausted for parallel_roles).

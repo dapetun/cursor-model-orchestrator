@@ -63,7 +63,8 @@ Tags: `@ds` `@paper` `@web` override project-type detection.
 - [`config/integrations.yaml`](config/integrations.yaml) — `core` / `stack` (templates: `integrations.core.yaml`, `integrations.stack.yaml`)
 - [`config/routes.yaml`](config/routes.yaml) — tiers, modes, HITL, role maps, plan_shapes
 - [`config/projects.example.yaml`](config/projects.example.yaml) — copy to gitignored `projects.yaml`
-- [`config/budget.yaml`](config/budget.yaml) — Other Models remaining budget (manual in v0)
+- [`config/budget.yaml`](config/budget.yaml) — budget thresholds; live spend via `python scripts/sync_budget.py` → `budget.local.yaml`
+- [`config/budget.local.example.yaml`](config/budget.local.example.yaml) — shape of synced Other Models % (`api_percent_used`)
 - [`config/models.generated.yaml`](config/models.generated.yaml) — synced catalog (do not hand-edit)
 
 Refresh model catalog:

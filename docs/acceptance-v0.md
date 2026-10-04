@@ -150,3 +150,17 @@ For each case, verify the Russian `[route]` line fields. **v0.2:** every `[route
 **Prompt:** «Напиши код панели регрессии в statsmodels по моей спецификации»
 
 **Expect:** either `роль=план` on Sonnet with handoff to Composer, or `роль=код` on Composer directly — **never** `model=Claude Sonnet/Opus` with `роль=код`.
+
+## 20. Budget sync from Cursor (v0.2)
+
+**Setup:** signed into Cursor Desktop; Python available.
+
+**Command:** `python scripts/sync_budget.py` from repo root.
+
+**Expect:** writes `config/budget.local.yaml` with `api_percent_used`, `spent_ratio`, `synced_at`, `source=usage-summary` (or `get-current-period-usage`); exit 0. File stays gitignored.
+
+**Prompt:** `/budget sync` then `/route переименуй файл`
+
+**Expect:** agent runs sync (or uses fresh local); `[route]` reflects `budget=ok|warn|exhausted` from `spent_ratio` / `api_percent_used` (≥100% → exhausted Cursor-only matrix).
+
+**Fail-soft:** if sync fails and no local file, fall back to `budget.yaml` `remaining_usd` without crashing the turn.

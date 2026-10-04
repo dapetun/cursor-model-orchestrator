@@ -67,7 +67,7 @@ If no plan exists yet on a hard tier, first recommend `роль=план` unless
 
 Resolve configs in this order:
 
-1. Workspace `config/` if present (this repo): `routes.yaml`, `integrations.yaml`, `projects.yaml`, `budget.yaml`, `models.generated.yaml`
+1. Workspace `config/` if present (this repo): `routes.yaml`, `integrations.yaml`, `projects.yaml`, `budget.yaml`, `budget.local.yaml` (synced), `models.generated.yaml`
 2. Path in `ORCHESTRATOR_ROOT.txt` next to this SKILL.md (written by `install_skill.ps1`)
 3. Skill-local `integrations.yaml` (copied at install)
 4. Embedded fallbacks in [reference-routes.md](reference-routes.md)
@@ -127,13 +127,29 @@ If `/route` only: print the block and **stop**.
 
 Detect `/eco` `/max` in the user message. Default mode = `balance`.
 
-## Budget guard (`budget.yaml`)
+## Budget guard (sync + policy)
 
-- Let `spent_ratio = 1 - remaining_usd / other_models_monthly_usd`.
-- **Cursor-only triggers** (same matrix): `remaining_usd <= 0`, mode `/eco`, or `spent_ratio >= warn_at_ratio` without `hard_other_override`.
+**Policy** (thresholds): `config/budget.yaml` — `warn_at_ratio`, `hard_other_override`, `other_models_monthly_usd`, `sync_ttl_minutes`.
+
+**Live spend** (preferred): `config/budget.local.yaml` from `python scripts/sync_budget.py` (Other Models = `api_percent_used`).
+
+### Before classify (each turn)
+
+1. If user says «синхронизируй бюджет» or `/budget sync` → run sync with force (ignore TTL).
+2. Else if `budget.local.yaml` missing **or** `synced_at` older than `sync_ttl_minutes` (default 60) → run:
+   `python <ORCHESTRATOR_ROOT>/scripts/sync_budget.py` (cwd = orchestrator root). Soft-fail if it errors.
+3. Resolve spend:
+   - **Synced/fresh local:** `spent_ratio = api_percent_used / 100` (clamp display; use local `spent_ratio` if present). `remaining_usd` from local when present.
+   - **Stale local** (sync failed, file kept): use last local values; mention `budget_source=stale` in `почему`.
+   - **No local ever:** `spent_ratio = 1 - remaining_usd / other_models_monthly_usd` from `budget.yaml` (manual).
+4. Never log or retain session tokens. Never put tokens in `[route]` or Hindsight.
+
+### Guard rules
+
+- **Cursor-only triggers** (same matrix): `spent_ratio >= 1` / `remaining_usd <= 0`, mode `/eco`, or `spent_ratio >= warn_at_ratio` without `hard_other_override`.
 - On those triggers: resolve **`logical_model.eco`** / `exhausted_policy.matrix` — never recommend Other Models.
 - Hard tiers: `science_stats`, `refactor_architecture`, `long_agent`, `parallel_roles`, `paper` (when mapped to Other for plan/analyze).
-- Manual updates: if user says «бюджет remaining N», treat remaining as N for this session and ask to edit `budget.yaml`.
+- Manual fallback: «бюджет remaining N» → treat remaining as N this session and ask to edit `budget.yaml` if sync unavailable.
 
 ### Exhausted / eco matrix (bind to YAML)
 
@@ -259,16 +275,18 @@ On coding-related tiers (`default_code`, `refactor_architecture`, `long_agent`, 
 - `/max` — force max mode for this turn
 - `/route` — classify, print `[route]`, stop
 - `/max force` — max mode + treat hard_other_override as true this turn
+- `/budget sync` — run `scripts/sync_budget.py` then classify (or stop after sync if user only asked sync)
 
 ## Hard rules
 
 1. Never select Fable without HITL confirmation.
-2. Never spend Other Models in `/eco` or when budget exhausted.
+2. Never spend Other Models in `/eco` or when budget exhausted (`api_percent_used` ≥ 100% / spent_ratio ≥ 1).
 3. Never skip the Russian `[route]` line (include `роль=`).
 4. Never recommend Other Models for writing/editing code or applying patches.
-5. Recommend only — no cascade execution, no best-of-N runs, no mid-chat model mutation, no subagent spawn (shape/splitter are hints).
-6. Prefer plan → approve → Composer execute before large edits.
-7. Bash is not a separate tier; route like normal code (executor = Composer).
+5. Prefer synced `budget.local.yaml`; refresh when stale; never expose Cursor session tokens.
+6. Recommend only — no cascade execution, no best-of-N runs, no mid-chat model mutation, no subagent spawn (shape/splitter are hints).
+7. Prefer plan → approve → Composer execute before large edits.
+8. Bash is not a separate tier; route like normal code (executor = Composer).
 
 ## Embedded fallback (if YAML missing)
 
