@@ -130,7 +130,7 @@ Never without Russian HITL confirm.
 ## Budget sync
 
 ```text
-python scripts/sync_budget.py
+python <root>/scripts/sync_budget.py
 ```
 
-Writes `config/budget.local.yaml` (`api_percent_used` = Other Models). Chat: «синхронизируй бюджет» / `/budget sync`. Auth: Cursor `state.vscdb` or `CURSOR_SESSION_TOKEN`. Never print tokens.
+`<root>` is `ORCHESTRATOR_ROOT.txt` or the directory that contains `SKILL.md`. Writes `<root>/config/budget.local.yaml` (`api_percent_used` = Other Models). Chat: «синхронизируй бюджет» / `/budget sync`. Auth: Cursor `state.vscdb` or `CURSOR_SESSION_TOKEN`. Never print tokens.

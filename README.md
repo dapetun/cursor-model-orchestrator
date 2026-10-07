@@ -1,8 +1,8 @@
 # Cursor Model Orchestrator
 
-**What it is:** A recommend-only Cursor skill that classifies each prompt with deterministic rules (keywords + project type) and recommends a cost-aware model under the Cursor Pro **Other Models** (~$20) budget. **Doctrine:** Other Models elaborate plans; Composer / Grok execute code and file ops. It overlays Auto/Router for routine work; it does not replace Auto and does not force the model picker.
+**What it is:** `cursor-model-orchestrator` is a recommend-only Cursor skill that classifies each prompt with deterministic rules (keywords + project type) and recommends a cost-aware model under the Cursor Pro **Other Models** (~$20) budget. **Doctrine:** Other Models elaborate plans; Composer / Grok execute code and file ops. It overlays Auto/Router for routine work; it does not replace Auto and does not force the model picker.
 
-**Last updated:** 2026-10-04 · **License:** [MIT](LICENSE) · **Release:** [v0.2.0](https://github.com/dapetun/cursor-model-orchestrator/releases/tag/v0.2.0)
+**Last updated:** 2026-10-07 · **License:** [MIT](LICENSE) · **Release:** [v0.2.0](https://github.com/dapetun/cursor-model-orchestrator/releases/tag/v0.2.0)
 
 **Stack partner (optional):** [cursor-hindsight-ondemand](https://github.com/dapetun/cursor-hindsight-ondemand) — local Hindsight daemon lifecycle on Windows. This repo is the **model router**; that repo is **memory lifecycle**. GitNexus is separate upstream.
 
@@ -23,6 +23,18 @@ Install stack order: (1) this repo `-Profile stack` → (2) [cursor-hindsight-on
 - Long-horizon research: v0 recommend-only → v1 subagents → v2 cascade/best-of-N → v3 usage ops
 
 ## Install
+
+### skills.sh (Cursor)
+
+```powershell
+npx skills add dapetun/cursor-model-orchestrator --skill model-orchestrator -a cursor -g
+```
+
+Copies this skill into the user skills directory, including bundled `config/` (routes, model catalog, budget policy, core profile) and `scripts/sync_budget.py`. Restart Cursor or start a new Agent chat.
+
+That bundle is the **core** profile. Project path prefixes, live `projects.yaml`, and the stack profile (Hindsight, GitNexus) come from a clone and `install_skill.ps1` below. The installer writes `ORCHESTRATOR_ROOT.txt`, which the skill prefers over the bundled snapshot.
+
+Refresh the bundled YAML from `config/` with `pwsh -File .\scripts\bundle_skill.ps1` before you publish route or catalog edits.
 
 ### Core (standalone)
 

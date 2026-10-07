@@ -65,12 +65,15 @@ If no plan exists yet on a hard tier, first recommend `роль=план` unless
 
 ## Config locations
 
-Resolve configs in this order:
+Resolve the orchestrator **root** in this order:
 
-1. Workspace `config/` if present (this repo): `routes.yaml`, `integrations.yaml`, `projects.yaml`, `budget.yaml`, `budget.local.yaml` (synced), `models.generated.yaml`
-2. Path in `ORCHESTRATOR_ROOT.txt` next to this SKILL.md (written by `install_skill.ps1`)
-3. Skill-local `integrations.yaml` (copied at install)
-4. Embedded fallbacks in [reference-routes.md](reference-routes.md)
+1. Path in `ORCHESTRATOR_ROOT.txt` next to this SKILL.md, when that file exists (`install_skill.ps1` writes it and points at a full clone).
+2. The directory that contains this SKILL.md, when `config/routes.yaml` is beside it. `npx skills add` ships this bundle: `config/` plus `scripts/sync_budget.py`.
+3. The open workspace, when that workspace contains `config/routes.yaml`.
+
+Read from `<root>/config/`: `routes.yaml`, `integrations.yaml`, `projects.yaml`, `budget.yaml`, `budget.local.yaml` (synced), `models.generated.yaml`.
+
+If `<root>/config/integrations.yaml` is missing, use `integrations.yaml` next to this SKILL.md when present. If `routes.yaml` is missing, use the embedded fallbacks in [reference-routes.md](reference-routes.md).
 
 If `projects.yaml` is missing, use `projects.example.yaml` markers only (path_prefixes may be placeholders).
 
@@ -129,15 +132,15 @@ Detect `/eco` `/max` in the user message. Default mode = `balance`.
 
 ## Budget guard (sync + policy)
 
-**Policy** (thresholds): `config/budget.yaml` — `warn_at_ratio`, `hard_other_override`, `other_models_monthly_usd`, `sync_ttl_minutes`.
+**Policy** (thresholds): `<root>/config/budget.yaml` — `warn_at_ratio`, `hard_other_override`, `other_models_monthly_usd`, `sync_ttl_minutes`.
 
-**Live spend** (preferred): `config/budget.local.yaml` from `python scripts/sync_budget.py` (Other Models = `api_percent_used`).
+**Live spend** (preferred): `<root>/config/budget.local.yaml` from `python <root>/scripts/sync_budget.py` (Other Models = `api_percent_used`). The script reads the local Cursor session and writes that file. Never print the session token, and never put it in `[route]` or Hindsight.
 
 ### Before classify (each turn)
 
 1. If user says «синхронизируй бюджет» or `/budget sync` → run sync with force (ignore TTL).
 2. Else if `budget.local.yaml` missing **or** `synced_at` older than `sync_ttl_minutes` (default 60) → run:
-   `python <ORCHESTRATOR_ROOT>/scripts/sync_budget.py` (cwd = orchestrator root). Soft-fail if it errors.
+   `python <root>/scripts/sync_budget.py` (cwd = orchestrator root). Soft-fail if the script is missing or it errors.
 3. Resolve spend:
    - **Synced/fresh local:** `spent_ratio = api_percent_used / 100` (clamp display; use local `spent_ratio` if present). `remaining_usd` from local when present.
    - **Stale local** (sync failed, file kept): use last local values; mention `budget_source=stale` in `почему`.
@@ -275,7 +278,7 @@ On coding-related tiers (`default_code`, `refactor_architecture`, `long_agent`, 
 - `/max` — force max mode for this turn
 - `/route` — classify, print `[route]`, stop
 - `/max force` — max mode + treat hard_other_override as true this turn
-- `/budget sync` — run `scripts/sync_budget.py` then classify (or stop after sync if user only asked sync)
+- `/budget sync` — run `python <root>/scripts/sync_budget.py` then classify (or stop after sync if user only asked sync)
 
 ## Hard rules
 

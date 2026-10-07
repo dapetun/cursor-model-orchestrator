@@ -6,6 +6,14 @@ Works **without** Hindsight or GitNexus. Recommend-only skill + YAML routing.
 
 ## Install
 
+From the skills directory (core bundle: routes, catalog, budget policy, `sync_budget.py`):
+
+```powershell
+npx skills add dapetun/cursor-model-orchestrator --skill model-orchestrator -a cursor -g
+```
+
+Full clone when you want local `projects.yaml` path prefixes. `install_skill.ps1` writes `ORCHESTRATOR_ROOT.txt`, which overrides the bundled snapshot:
+
 ```powershell
 git clone https://github.com/dapetun/cursor-model-orchestrator.git
 cd cursor-model-orchestrator

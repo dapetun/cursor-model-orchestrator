@@ -11,6 +11,8 @@ Thumbs.db
 # Local machine paths / overrides (use *.example.yaml in git)
 config/projects.yaml
 config/budget.local.yaml
+skill/model-orchestrator/config/projects.yaml
+skill/model-orchestrator/config/budget.local.yaml
 
 # GitNexus index + generated agent rules (install locally)
 .gitnexus/
